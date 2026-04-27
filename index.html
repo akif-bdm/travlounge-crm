@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Travlounge CRM</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --nav:#1A1A2E;--nav2:#16213E;--accent:#E94560;--accent2:#0F3460;
+  --bg:#F4F6F9;--white:#fff;--text:#2D3436;--muted:#636e72;
+  --border:#DFE6E9;--success:#00B894;--warning:#FDCB6E;--danger:#E17055;
+  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.08);
+  --input-bg:#fff;--card:#fff;--table-head:#F8F9FA;--hover:#FFF9F9;
+  --modal-overlay:rgba(0,0,0,.45);
+}
+body.dark{
+  --bg:#0D0D1A;--white:#161625;--text:#E2E8F0;--muted:#94A3B8;
+  --border:rgba(255,255,255,.09);--shadow:0 2px 16px rgba(0,0,0,.4);
+  --input-bg:#1E1E30;--card:#1E1E30;--table-head:#131320;--hover:rgba(233,69,96,.06);
+  --modal-overlay:rgba(0,0,0,.7);
+}
+body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .25s,color .25s;}
+
+/* DARK MODE specific overrides */
+body.dark .login-card{background:#161625;}
+body.dark .topbar{background:#161625;border-color:rgba(255,255,255,.07);}
+body.dark .kpi-card{background:#161625;}
+body.dark .pipeline-card{background:#161625;}
+body.dark .table-card{background:#161625;}
+body.dark .modal{background:#1E1E30;}
+body.dark .meeting-box{background:#13132a;border-color:rgba(26,82,118,.5);}
+body.dark .settings-card{background:#161625;}
+body.dark .team-card{background:#161625;}
+body.dark .team-member{border-color:rgba(255,255,255,.08);}
+body.dark .badge-lead{background:#1a2a3a;color:#7eb8d4;}
+body.dark .badge-partner{background:#0d2a24;color:#4ecba6;}
+body.dark .badge-outreach{background:#1a2a3a;color:#7eb8d4;}
+body.dark .badge-meeting{background:#0d2240;color:#5da8e0;}
+body.dark .badge-negotiation{background:#231a30;color:#b88fe0;}
+body.dark .badge-won{background:#0d2820;color:#4ecba6;}
+body.dark .badge-rejected{background:#2d1a1a;color:#e07575;}
+body.dark .badge-high{background:#2d1a1a;color:#e07575;}
+body.dark .badge-medium{background:#2a2210;color:#d4b24a;}
+body.dark .badge-low{background:#0d2820;color:#4ecba6;}
+body.dark .filter-sel{background:var(--input-bg);color:var(--text);}
+body.dark .search-box{background:var(--input-bg);color:var(--text);}
+body.dark .btn-sec{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border);}
+body.dark .btn-logout{background:rgba(255,255,255,.05);}
+body.dark table thead th{background:#13132a;color:#94A3B8;}
+body.dark tbody tr:hover{background:rgba(233,69,96,.05);}
+body.dark tbody tr{border-color:rgba(255,255,255,.06);}
+body.dark .config-field input{background:var(--input-bg);color:var(--text);border-color:var(--border);}
+body.dark .dark-toggle{background:rgba(255,255,255,.08);color:#E2E8F0;}
+body.dark .dark-toggle:hover{background:rgba(255,255,255,.13);}
+
+/* LOGIN */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--nav);}
+.login-card{background:var(--white);border-radius:16px;padding:48px 40px;width:380px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo h1{font-size:22px;font-weight:800;color:var(--nav);}
+.login-logo span{color:var(--accent);}
+.login-logo p{font-size:12px;color:var(--muted);margin-top:4px;}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;font-family:Arial,sans-serif;transition:border .2s;background:var(--input-bg);color:var(--text);}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent);}
+.btn-primary{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-primary:hover{opacity:.88;}
+.login-error{color:var(--danger);font-size:12px;margin-top:10px;text-align:center;display:none;}
+
+/* APP SHELL */
+#app{display:none;min-height:100vh;}
+.layout{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:230px;background:var(--nav);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s;}
+.sidebar-brand{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sidebar-brand h2{font-size:16px;font-weight:800;color:#fff;}
+.sidebar-brand h2 span{color:var(--accent);}
+.sidebar-brand p{font-size:10px;color:#8395a7;margin-top:2px;}
+.sidebar-user{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sidebar-user .user-name{font-size:12px;font-weight:600;color:#fff;}
+.sidebar-user .user-role{font-size:10px;color:#8395a7;}
+nav{flex:1;padding:12px 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:#8395a7;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;border-left:3px solid transparent;}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#fff;}
+.nav-item.active{background:rgba(233,69,96,.1);color:var(--accent);border-left-color:var(--accent);}
+.nav-item .icon{width:18px;text-align:center;font-size:15px;}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:8px;}
+.btn-logout{width:100%;padding:9px;background:rgba(255,255,255,.07);color:#8395a7;border:none;border-radius:7px;font-size:12px;cursor:pointer;}
+.btn-logout:hover{background:rgba(233,69,96,.15);color:var(--accent);}
+.dark-toggle{width:100%;padding:9px;background:rgba(255,255,255,.05);color:#8395a7;border:none;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.dark-toggle:hover{background:rgba(255,255,255,.1);color:#fff;}
+
+/* LOGO */
+.brand-wrap{display:flex;align-items:center;gap:10px;}
+.brand-mark{width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.brand-mark svg{display:block;}
+.brand-text{display:flex;flex-direction:column;}
+.brand-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.brand-tagline{font-size:9px;color:#8395a7;letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
+
+/* LOGIN LOGO */
+.login-brand-wrap{display:flex;align-items:center;gap:14px;justify-content:center;margin-bottom:32px;}
+.login-brand-mark{width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.login-brand-text{text-align:left;}
+.login-brand-name{font-size:22px;font-weight:700;color:var(--nav);letter-spacing:.3px;line-height:1;}
+.login-brand-sub{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px;}
+body.dark .login-brand-name{color:#E2E8F0;}
+
+/* MOBILE OVERLAY */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:199;}
+.sidebar-overlay.open{display:block;}
+
+/* MAIN */
+.main{margin-left:230px;flex:1;min-height:100vh;}
+.topbar{background:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;gap:10px;}
+.topbar-title{font-size:17px;font-weight:700;color:var(--nav);white-space:nowrap;}
+.topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.content{padding:24px;}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--nav);border-radius:2px;}
+
+/* KPI CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.kpi-card{background:var(--white);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);border-left:4px solid;}
+.kpi-card.blue{border-color:var(--accent2);}
+.kpi-card.red{border-color:var(--accent);}
+.kpi-card.green{border-color:var(--success);}
+.kpi-card.yellow{border-color:var(--warning);}
+.kpi-card.purple{border-color:#7D3C98;}
+.kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.kpi-value{font-size:30px;font-weight:800;color:var(--nav);margin:6px 0 2px;}
+.kpi-sub{font-size:11px;color:var(--muted);}
+
+/* PIPELINE */
+.pipeline-card{background:var(--white);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:24px;}
+.section-title{font-size:13px;font-weight:700;color:var(--nav);margin-bottom:16px;}
+.pipeline-bar{display:flex;border-radius:8px;overflow:hidden;height:28px;margin-bottom:10px;}
+.pipeline-seg{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;min-width:0;overflow:hidden;}
+.pipeline-legend{display:flex;flex-wrap:wrap;gap:10px;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);}
+.legend-dot{width:10px;height:10px;border-radius:50%;}
+
+/* TABLE */
+.table-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.table-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.table-wrap{overflow-x:auto;}
+.search-box{padding:8px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;width:200px;}
+.search-box:focus{outline:none;border-color:var(--accent);}
+.filter-sel{padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;background:#fff;}
+table{width:100%;border-collapse:collapse;min-width:700px;}
+thead th{background:var(--table-head);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:hover{background:var(--hover);}
+tbody td{padding:11px 14px;font-size:13px;vertical-align:middle;}
+.empty-row td{text-align:center;color:var(--muted);padding:40px;}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;}
+.badge-outreach{background:#EBF5FB;color:#1A5276;}
+.badge-meeting{background:#A9CCE3;color:#154360;}
+.badge-negotiation{background:#E8DAEF;color:#6C3483;}
+.badge-won{background:#ABEBC6;color:#0B5345;}
+.badge-rejected{background:#F5B7B1;color:#922B21;}
+.badge-lead{background:#EAF4FB;color:#1A5276;}
+.badge-partner{background:#E8F8F5;color:#0B5345;}
+.badge-high{background:#FDEDEC;color:#C0392B;}
+.badge-medium{background:#FEF9E7;color:#9A7D0A;}
+.badge-low{background:#EAFAF1;color:#0B5345;}
+
+/* LEAD AGE */
+.age-fresh{color:var(--success);font-weight:600;}
+.age-warm{color:var(--warning);font-weight:600;}
+.age-stale{color:var(--danger);font-weight:600;}
+
+/* BUTTONS */
+.btn{padding:9px 16px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+.btn-add{background:var(--accent);color:#fff;}
+.btn-add:hover{opacity:.88;}
+.btn-slack{background:#4A154B;color:#fff;}
+.btn-slack:hover{opacity:.88;}
+.btn-sm{padding:5px 10px;font-size:11px;}
+.btn-edit{background:#EAF4FB;color:var(--accent2);}
+.btn-del{background:#FDEDEC;color:var(--danger);}
+.btn-sec{background:var(--bg);color:var(--text);border:1.5px solid var(--border);}
+.btn-wa{background:#25D366;color:#fff;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:999;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:14px;padding:28px;width:640px;max-width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 25px 80px rgba(0,0,0,.25);}
+.modal h3{font-size:16px;font-weight:700;color:var(--nav);margin-bottom:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.form-grid .full{grid-column:1/-1;}
+.modal .form-group{margin-bottom:0;}
+.modal .form-group label{font-size:11px;}
+.char-count{font-size:11px;color:var(--muted);font-weight:400;}
+.char-count.ok{color:var(--success);}
+.meeting-box{background:#EBF5FB;padding:14px;border-radius:8px;border:1.5px solid #AED6F1;margin-top:4px;}
+.meeting-box label{font-size:11px;font-weight:600;color:#1A5276 !important;margin-bottom:6px;}
+.meeting-box p{font-size:11px;color:var(--muted);margin-top:6px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.required-star{color:var(--accent);}
+
+/* SETTINGS */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.settings-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
+.settings-card h4{font-size:13px;font-weight:700;color:var(--nav);margin-bottom:14px;}
+.settings-card p{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;}
+.config-field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px;}
+.config-field label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;}
+.config-field input{padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:monospace;}
+
+/* TEAM MGMT */
+.team-card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
+.team-card h4{font-size:13px;font-weight:700;color:var(--nav);margin-bottom:16px;}
+.team-list{margin-bottom:16px;}
+.team-member{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border:1px solid var(--border);border-radius:8px;margin-bottom:8px;}
+.team-member-info{display:flex;flex-direction:column;}
+.team-member-name{font-size:13px;font-weight:600;}
+.team-member-email{font-size:11px;color:var(--muted);}
+.add-member-form{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;}
+
+/* SENTIMENT BADGES */
+.badge-positive{background:#ABEBC6;color:#0B5345;}
+.badge-neutral{background:#FAD7A0;color:#784212;}
+.badge-negative{background:#F5B7B1;color:#922B21;}
+
+/* DAILY SUMMARY CARDS */
+.mgr-summary-card{background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border);}
+.mgr-summary-card h5{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:6px;}
+.mgr-summary-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:5px;}
+.mgr-summary-stat span{font-weight:700;color:var(--text);}
+body.dark .mgr-summary-card{background:#13132a;}
+
+/* MANAGER CHART */
+.mgr-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.mgr-name{font-size:12px;font-weight:600;color:var(--text);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mgr-bar-wrap{flex:1;background:var(--border);border-radius:20px;height:10px;overflow:hidden;}
+.mgr-bar{height:100%;border-radius:20px;background:var(--accent);transition:width .4s ease;}
+.mgr-count{font-size:12px;font-weight:700;color:var(--accent);width:30px;text-align:right;flex-shrink:0;}
+.role-badge{font-size:9px;background:rgba(233,69,96,.12);color:var(--accent);border-radius:4px;padding:1px 5px;margin-left:4px;font-weight:700;vertical-align:middle;}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--nav);color:#fff;padding:11px 18px;border-radius:9px;font-size:13px;box-shadow:0 4px 20px rgba(0,0,0,.25);animation:slideIn .3s ease;max-width:320px;}
+.toast.success{border-left:4px solid var(--success);}
+.toast.error{border-left:4px solid var(--danger);}
+.toast.info{border-left:4px solid var(--warning);}
+@keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* UTILITY */
+.view{display:none;}.view.active{display:block;}
+.overdue{color:var(--danger);font-weight:700;}
+.whatsapp-btn{background:#25D366;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-weight:600;}
+
+/* MOBILE RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.mobile-open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .settings-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-grid .full{grid-column:1;}
+  .topbar-actions .search-box{width:140px;}
+  .add-member-form{grid-template-columns:1fr;gap:8px;}
+  .table-card{overflow-x:auto;}
+  .content{padding:16px;}
+  .topbar{padding:12px 16px;}
+  .meeting-fields-grid{grid-template-columns:1fr 1fr !important;}
+}
+@media(max-width:480px){
+  .meeting-fields-grid{grid-template-columns:1fr !important;}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .login-card{padding:32px 24px;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-brand-wrap">
+      <img src="data:image/png;base64,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" alt="Travlounge" style="height:72px;width:auto;border-radius:10px;"/>
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="you@travlounge.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••"/>
+    </div>
+    <button class="btn-primary" onclick="Auth.login()">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+  <div class="layout">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-wrap">
+          <img src="data:image/png;base64,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" alt="Travlounge" style="height:38px;width:auto;border-radius:6px;"/>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-name" id="sidebar-user-name">Loading...</div>
+        <div class="user-role" id="sidebar-user-email"></div>
+      </div>
+      <nav>
+        <div class="nav-item active" onclick="Router.go('dashboard')" id="nav-dashboard"><span class="icon">◈</span>Dashboard</div>
+        <div class="nav-item" onclick="Router.go('crm')" id="nav-crm"><span class="icon">◎</span>CRM Tracker</div>
+        <div class="nav-item" onclick="Router.go('activity')" id="nav-activity"><span class="icon">▤</span>Activity Log</div>
+        <div class="nav-item" onclick="Router.go('team')" id="nav-team"><span class="icon">◷</span>Team</div>
+        <div class="nav-item" onclick="Router.go('settings')" id="nav-settings"><span class="icon">◬</span>Settings</div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="dark-toggle" id="dark-toggle-btn" onclick="DarkMode.toggle()">
+          <span id="dark-icon">🌙</span><span id="dark-label">Dark Mode</span>
+        </button>
+        <button class="btn-logout" onclick="Auth.logout()">↩ Sign Out</button>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="view active" id="view-dashboard">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div class="topbar-title">Dashboard</div>
+          </div>
+          <div class="topbar-actions">
+            <span id="dash-date" style="font-size:12px;color:var(--muted)"></span>
+            <button class="btn btn-slack" onclick="Slack.generatePoster()">Export EOD Poster</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="kpi-grid">
+            <div class="kpi-card blue"><div class="kpi-label">Total Leads</div><div class="kpi-value" id="kpi-total">—</div><div class="kpi-sub">All records</div></div>
+            <div class="kpi-card red"><div class="kpi-label">Hot Leads</div><div class="kpi-value" id="kpi-hot">—</div><div class="kpi-sub">High priority</div></div>
+            <div class="kpi-card green"><div class="kpi-label">Closed & Won</div><div class="kpi-value" id="kpi-won">—</div><div class="kpi-sub">Partners signed</div></div>
+            <div class="kpi-card yellow"><div class="kpi-label">Follow-ups Due</div><div class="kpi-value" id="kpi-due">—</div><div class="kpi-sub">Today or overdue</div></div>
+          </div>
+          <div class="pipeline-card">
+            <div class="section-title">Pipeline Breakdown</div>
+            <div class="pipeline-bar" id="pipeline-bar"></div>
+            <div class="pipeline-legend" id="pipeline-legend"></div>
+          </div>
+          <div class="pipeline-card" id="manager-chart-card">
+            <div class="section-title">Leads by Manager</div>
+            <div id="manager-chart"></div>
+          </div>
+          <div class="table-card">
+            <div class="table-header"><div class="section-title" style="margin:0">Recent Activity</div></div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Company</th><th>Segment</th><th>Stage</th><th>Manager</th><th>Follow-up</th><th>Commission</th><th>Age</th></tr></thead>
+              <tbody id="dash-recent-tbody"><tr class="empty-row"><td colspan="7">Loading...</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRM TRACKER -->
+      <div class="view" id="view-crm">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div class="topbar-title">CRM Tracker</div>
+          </div>
+          <div class="topbar-actions">
+            <input class="search-box" id="crm-search" placeholder="🔍 Search..." oninput="CRM.filter()"/>
+            <select class="filter-sel" id="crm-stage-filter" onchange="CRM.filter()">
+              <option value="">All Stages</option>
+              <option>First Outreach</option><option>Meeting Done</option>
+              <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option>
+            </select>
+            <select class="filter-sel" id="crm-seg-filter" onchange="CRM.filter()">
+              <option value="">All Segments</option>
+              <option>Cafe</option><option>Restaurant</option><option>Gym</option><option>Pharmacy</option>
+              <option>Coworking</option><option>Laundry</option><option>Automobile</option><option>Travel Agency</option>
+            </select>
+            <button class="btn btn-add" onclick="CRM.openModal()">+ Add Lead</button>
+          </div>
+        </div>
+        <div class="content">
+          <div class="table-card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>#</th><th>Company</th><th>Segment</th><th>Stage</th><th>Priority</th><th>Manager</th><th>Follow-up</th><th>Commission</th><th>Age</th><th>Actions</th></tr></thead>
+              <tbody id="crm-tbody"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY LOG -->
+      <div class="view" id="view-activity">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div class="topbar-title">Activity Log</div>
+          </div>
+          <div class="topbar-actions">
+            <input class="search-box" id="act-search" placeholder="🔍 Search..." oninput="Activity.filter()"/>
+            <select class="filter-sel" id="act-type-filter" onchange="Activity.filter()">
+              <option value="">All Types</option>
+              <option>Call</option><option>Email</option><option>Meeting</option>
+              <option>WhatsApp</option><option>Demo</option><option>Proposal</option><option>Other</option>
+            </select>
+            <select class="filter-sel" id="act-mgr-filter" onchange="Activity.filter()">
+              <option value="">All Managers</option>
+            </select>
+            <button class="btn btn-add" id="btn-log-activity" onclick="Activity.openModal()">+ Log Activity</button>
+          </div>
+        </div>
+        <div class="content">
+          <!-- Daily Summary -->
+          <div class="pipeline-card" id="act-daily-summary">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+              <div class="section-title" style="margin:0">📋 Today's Manager Summary</div>
+              <button class="btn btn-slack btn-sm" onclick="Slack.generatePoster()">Export EOD Poster</button>
+            </div>
+            <div id="act-summary-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;"></div>
+          </div>
+          <div class="table-card">
+            <div class="table-wrap"><table>
+              <thead><tr><th>Date</th><th>Company</th><th>Type</th><th>Manager</th><th>Sentiment</th><th>Outcome</th><th>Next Action</th><th>Deadline</th><th>Dur.</th><th>Actions</th></tr></thead>
+              <tbody id="act-tbody"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
+            </table></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEAM -->
+      <div class="view" id="view-team">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div class="topbar-title">Team Members</div>
+          </div>
+        </div>
+        <div class="content">
+          <div class="team-card">
+            <h4>👥 Managers & Team</h4>
+            <div class="team-list" id="team-list">Loading...</div>
+            <h4 style="margin-bottom:12px;">Add New Member</h4>
+            <div class="add-member-form" style="grid-template-columns:1fr 1fr auto auto;">
+              <div class="form-group" style="margin:0"><label>Full Name</label><input type="text" id="new-member-name" placeholder="e.g. Rahul Mehta"/></div>
+              <div class="form-group" style="margin:0"><label>Email</label><input type="email" id="new-member-email" placeholder="rahul@travlounge.com"/></div>
+              <div class="form-group" style="margin:0">
+                <label>Role</label>
+                <select id="new-member-role">
+                  <option value="Manager">Manager</option>
+                  <option value="Viewer">Viewer</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin:0"><label>&nbsp;</label><button class="btn btn-add" onclick="Team.addMember()">Add</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="view" id="view-settings">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div class="topbar-title">Settings</div>
+          </div>
+        </div>
+        <div class="content">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h4>💬 Slack</h4>
+              <p>Paste your Slack Incoming Webhook URL for EOD reports.</p>
+              <div class="config-field"><label>Webhook URL</label><input type="text" id="cfg-slack" placeholder="https://hooks.slack.com/services/..."/></div>
+              <div class="config-field"><label>Channel</label><input type="text" id="cfg-slack-channel" placeholder="#crm-updates"/></div>
+              <button class="btn btn-add btn-sm" onclick="Settings.save()">Save</button>
+            </div>
+            <div class="settings-card">
+              <h4>🗄️ Supabase</h4>
+              <p>Your database connection. To migrate: pg_dump → restore to new PostgreSQL → update URL below.</p>
+              <div class="config-field"><label>Project URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
+              <div class="config-field"><label>Anon Key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
+              <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires reload.</p>
+              <button class="btn btn-add btn-sm" onclick="Settings.save()">Save & Reload</button>
+            </div>
+            <div class="settings-card" style="grid-column:1/-1">
+              <h4>📖 Quick Setup Guide</h4>
+              <p><strong>Morning email reminders</strong> are already set up via Supabase Edge Function (meeting-reminders) — fires at 8:30 AM IST daily for any meetings scheduled that day.</p>
+              <p style="margin-top:8px"><strong>Slack EOD:</strong> Add webhook URL above → click "EOD to Slack" on Dashboard each evening.</p>
+              <p style="margin-top:8px"><strong>Add team members:</strong> Go to Team tab → add name + email → they appear in the Manager dropdown when adding leads.</p>
+              <p style="margin-top:8px"><strong>Migration:</strong> Run <code>pg_dump</code> on Supabase → restore to any PostgreSQL server → update URL above.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CRM MODAL -->
+<div class="modal-overlay" id="crm-modal">
+  <div class="modal">
+    <h3 id="crm-modal-title">Add New Lead / Partner</h3>
+    <input type="hidden" id="crm-edit-id"/>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Company / Brand <span class="required-star">*</span></label>
+        <input type="text" id="f-company" placeholder="e.g. The Brew House"/>
+      </div>
+      <div class="form-group">
+        <label>Category <span class="required-star">*</span></label>
+        <select id="f-category"><option>Lead</option><option>Partner</option></select>
+      </div>
+      <div class="form-group">
+        <label>Segment <span class="required-star">*</span></label>
+        <select id="f-segment">
+          <option value="">Select segment...</option>
+          <option>Cafe</option><option>Restaurant</option><option>Gym</option>
+          <option>Pharmacy</option><option>Coworking</option><option>Laundry</option>
+          <option>Automobile</option><option>Travel Agency</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>City</label>
+        <select id="f-city">
+          <option value="">Select city...</option>
+          <option>Calicut</option>
+          <option>Ernakulam</option>
+          <option>Malappuram</option>
+          <option>Wayanad</option>
+          <option>Trivandrum</option>
+          <option>Kannur</option>
+          <option>Palakkad</option>
+          <option>Thrissur</option>
+          <option>Kottayam</option>
+          <option>Kollam</option>
+          <option>Alappuzha</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Contact Person <span class="required-star">*</span></label>
+        <input type="text" id="f-contact-person" placeholder="Full name"/>
+      </div>
+      <div class="form-group">
+        <label>Contact Phone <span class="required-star">*</span></label>
+        <input type="text" id="f-contact-phone" placeholder="+91 98765 43210"/>
+      </div>
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input type="email" id="f-contact-email"/>
+      </div>
+      <div class="form-group">
+        <label>Source</label>
+        <select id="f-source">
+          <option value="">Select source...</option>
+          <option>Cold Outreach</option>
+          <option>From Network</option>
+          <option>Referral</option>
+          <option>Event</option>
+          <option>Social Media</option>
+          <option>Inbound</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Stage <span class="required-star">*</span></label>
+        <select id="f-stage">
+          <option>First Outreach</option><option>Meeting Done</option>
+          <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Priority</label>
+        <select id="f-priority"><option>High</option><option selected>Medium</option><option>Low</option></select>
+      </div>
+      <div class="form-group">
+        <label>Assigned Manager <span class="required-star">*</span></label>
+        <select id="f-assigned"><option value="">Select manager...</option></select>
+      </div>
+      <div class="form-group">
+        <label>Commission %</label>
+        <input type="number" id="f-commission" placeholder="e.g. 15" min="0" max="100" step="0.1"/>
+      </div>
+      <div class="form-group full">
+        <label>Next Follow-up Date <span class="required-star">*</span></label>
+        <input type="date" id="f-followup"/>
+      </div>
+      <div class="form-group full">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;text-transform:none;letter-spacing:0;">
+          <input type="checkbox" id="f-meeting-checkbox" onchange="CRM.toggleMeetingDate()" style="width:16px;height:16px;accent-color:var(--accent);"/>
+          <span>Meeting has been scheduled</span>
+        </label>
+      </div>
+      <div class="form-group full" id="meeting-date-box" style="display:none;">
+        <div class="meeting-box">
+          <label>Meeting Details</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px;" class="meeting-fields-grid">
+            <div>
+              <label style="font-size:10px;color:#1A5276;font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">Date</label>
+              <input type="date" id="f-meeting-date"/>
+            </div>
+            <div>
+              <label style="font-size:10px;color:#1A5276;font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">Time</label>
+              <input type="time" id="f-meeting-time"/>
+            </div>
+            <div>
+              <label style="font-size:10px;color:#1A5276;font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px;">Location / Place</label>
+              <input type="text" id="f-meeting-place" placeholder="e.g. Their office, Zoom, Cafe..."/>
+            </div>
+          </div>
+          <p>Morning reminder will be sent at 8:30 AM IST with time &amp; location details</p>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Notes <span class="required-star">*</span> <span class="char-count" id="notes-char-count">(0 / 50 min)</span></label>
+        <textarea id="f-notes" rows="4" placeholder="Add context — what was discussed, what they need, any blockers, next steps... (minimum 50 characters)" oninput="CRM.updateCharCount()"></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="CRM.closeModal()">Cancel</button>
+      <button class="btn btn-add" onclick="CRM.save()">Save Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITY MODAL -->
+<div class="modal-overlay" id="act-modal">
+  <div class="modal">
+    <h3>Log Activity</h3>
+    <input type="hidden" id="act-edit-id"/>
+    <div class="form-grid">
+      <div class="form-group"><label>Company / Lead <span class="required-star">*</span></label><input type="text" id="af-company" placeholder="e.g. Hug a Mug"/></div>
+      <div class="form-group"><label>Activity Type <span class="required-star">*</span></label>
+        <select id="af-type"><option>Call</option><option>Email</option><option>Meeting</option><option>WhatsApp</option><option>Demo</option><option>Site Visit</option><option>Proposal</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Manager <span class="required-star">*</span></label><select id="af-manager"><option value="">Select manager...</option></select></div>
+      <div class="form-group"><label>Date <span class="required-star">*</span></label><input type="date" id="af-date"/></div>
+      <div class="form-group"><label>Duration (mins)</label><input type="number" id="af-duration" placeholder="e.g. 30"/></div>
+      <div class="form-group">
+        <label>Sentiment <span class="required-star">*</span></label>
+        <select id="af-sentiment">
+          <option value="">Select...</option>
+          <option value="Positive">😊 Positive</option>
+          <option value="Neutral">😐 Neutral</option>
+          <option value="Negative">😞 Negative</option>
+        </select>
+      </div>
+      <div class="form-group full"><label>Outcome <span class="required-star">*</span></label><input type="text" id="af-outcome" placeholder="What happened during this interaction?"/></div>
+      <div class="form-group full"><label>Next Action <span class="required-star">*</span></label><input type="text" id="af-next-step" placeholder="What is the exact next step to move this forward?"/></div>
+      <div class="form-group full"><label>Next Action Deadline</label><input type="date" id="af-followup"/></div>
+      <div class="form-group full"><label>Additional Notes</label><textarea id="af-notes" rows="3" placeholder="Any extra context, blockers, or observations..."></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-sec" onclick="Activity.closeModal()">Cancel</button>
+      <button class="btn btn-add" onclick="Activity.save()">Save Activity</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const CFG = {
+  get sbUrl(){ return localStorage.getItem('tl_sb_url') || 'https://ezjhosaxgekxpphzxota.supabase.co'; },
+  get sbKey(){ return localStorage.getItem('tl_sb_key') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6amhvc2F4Z2VreHBwaHp4b3RhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY5OTk1OTcsImV4cCI6MjA5MjU3NTU5N30.otK2dT-qAjr1bJPS-JFQY4u6UZU5IvK_GtJOMgeg5pc'; },
+  get slackUrl(){ return localStorage.getItem('tl_slack_url') || ''; },
+  get slackChannel(){ return localStorage.getItem('tl_slack_ch') || '#crm-updates'; },
+};
+
+const ADMIN_EMAIL = 'akif@travlounge.com';
+let currentUserEmail = '';
+let currentUserRole  = 'Manager'; // 'Manager' | 'Viewer' | 'Admin'
+
+let sb;
+function initSupabase(){
+  sb = supabase.createClient(CFG.sbUrl, CFG.sbKey);
+  return sb;
+}
+
+// ── MOBILE SIDEBAR ────────────────────────────────────────────────────────────
+function openSidebar(){
+  document.getElementById('sidebar').classList.add('mobile-open');
+  document.getElementById('sidebar-overlay').classList.add('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('mobile-open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+const Toast = {
+  show(msg, type='info', dur=3500){
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), dur);
+  }
+};
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const Auth = {
+  async login(){
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-pass').value;
+    const errEl = document.getElementById('login-error');
+    errEl.style.display = 'none';
+    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if(error){ errEl.textContent = error.message; errEl.style.display='block'; return; }
+    Auth.onLogin();
+  },
+  async logout(){
+    await sb.auth.signOut();
+    document.getElementById('app').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+  },
+  async onLogin(){
+    const { data:{ user } } = await sb.auth.getUser();
+    currentUserEmail = user.email;
+    // Determine role
+    if(currentUserEmail === ADMIN_EMAIL){ currentUserRole = 'Admin'; }
+    else {
+      const { data:tm } = await sb.from('team_members').select('role').eq('email',currentUserEmail).single();
+      currentUserRole = tm?.role || 'Manager';
+    }
+    const isAdmin  = currentUserRole === 'Admin';
+    const isViewer = currentUserRole === 'Viewer';
+    document.getElementById('sidebar-user-name').textContent  = user.email.split('@')[0] + (isAdmin?' [Admin]':isViewer?' [Viewer]':'');
+    document.getElementById('sidebar-user-email').textContent = user.email;
+    // Hide action elements for viewers
+    if(isViewer){
+      document.querySelectorAll('#btn-log-activity').forEach(el=>el.style.display='none');
+      document.querySelector('[onclick="CRM.openModal()"]').style.display='none';
+    }
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    await Promise.all([DB.fetchLeads(), DB.fetchActivities(), DB.fetchManagers()]);
+    Dashboard.load();
+    CRM.render();
+    Activity.render();
+    Team.load();
+    DB.subscribeRealtime();
+  }
+};
+
+// ── DB ────────────────────────────────────────────────────────────────────────
+const DB = {
+  leads:[], activities:[], managers:[],
+
+  async fetchLeads(){
+    const { data } = await sb.from('leads').select('*').order('created_at',{ascending:false});
+    this.leads = data || []; return this.leads;
+  },
+  async fetchActivities(){
+    const { data } = await sb.from('activities').select('*').order('activity_date',{ascending:false});
+    this.activities = data || []; return this.activities;
+  },
+  async fetchManagers(){
+    const { data } = await sb.from('team_members').select('*').order('name');
+    this.managers = data || []; return this.managers;
+  },
+  async upsertLead(p){ const { data,error } = await sb.from('leads').upsert(p).select(); if(error) throw error; return data[0]; },
+  async deleteLead(id){ const { error } = await sb.from('leads').delete().eq('id',id); if(error) throw error; },
+  async upsertActivity(p){ const { data,error } = await sb.from('activities').upsert(p).select(); if(error) throw error; return data[0]; },
+  async deleteActivity(id){ const { error } = await sb.from('activities').delete().eq('id',id); if(error) throw error; },
+  async addTeamMember(p){ const { data,error } = await sb.from('team_members').insert(p).select(); if(error) throw error; return data[0]; },
+  async deleteTeamMember(id){ const { error } = await sb.from('team_members').delete().eq('id',id); if(error) throw error; },
+
+  subscribeRealtime(){
+    sb.channel('leads').on('postgres_changes',{event:'*',schema:'public',table:'leads'},async()=>{
+      await DB.fetchLeads(); Dashboard.load(); CRM.render();
+      Toast.show('📡 CRM updated live','info',2000);
+    }).subscribe();
+    sb.channel('activities').on('postgres_changes',{event:'*',schema:'public',table:'activities'},async()=>{
+      await DB.fetchActivities(); Activity.render();
+    }).subscribe();
+  }
+};
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const STAGE_COLORS = {
+  'First Outreach':'#AED6F1','Meeting Done':'#5DADE2',
+  'Negotiation':'#7D3C98','Closed & Won':'#00B894','Rejected':'#E17055'
+};
+const STAGE_BADGE = {
+  'First Outreach':'outreach','Meeting Done':'meeting',
+  'Negotiation':'negotiation','Closed & Won':'won','Rejected':'rejected'
+};
+
+const Fmt = {
+  date(d){ if(!d) return '—'; return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); },
+  commission(v){ if(!v && v!==0) return '—'; return v+'%'; },
+  isOverdue(d){ return d && new Date(d) < new Date() && new Date(d).toDateString()!==new Date().toDateString(); },
+  ageDays(created){
+    if(!created) return 0;
+    return Math.floor((new Date()-new Date(created))/(1000*60*60*24));
+  },
+  ageLabel(created){
+    const d = Fmt.ageDays(created);
+    if(d<=3) return `<span class="age-fresh">${d}d</span>`;
+    if(d<=10) return `<span class="age-warm">${d}d</span>`;
+    return `<span class="age-stale">${d}d ⚠️</span>`;
+  },
+  stageBadge(s){ return `<span class="badge badge-${STAGE_BADGE[s]||'outreach'}">${s||'—'}</span>`; },
+  priorityBadge(p){ const m={'High':'high','Medium':'medium','Low':'low'}; return `<span class="badge badge-${m[p]||'medium'}">${p||'—'}</span>`; }
+};
+
+function populateManagerDropdown(selId){
+  const sel = document.getElementById(selId);
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select manager...</option>';
+  DB.managers.forEach(m => {
+    const o = document.createElement('option');
+    o.value = m.name; o.textContent = m.name;
+    if(m.name===cur) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────────
+const Dashboard = {
+  load(){
+    const leads = DB.leads;
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('kpi-total').textContent = leads.length;
+    document.getElementById('kpi-hot').textContent   = leads.filter(l=>l.priority==='High').length;
+    document.getElementById('kpi-won').textContent   = leads.filter(l=>l.stage==='Closed & Won').length;
+    document.getElementById('kpi-due').textContent   = leads.filter(l=>l.next_followup&&l.next_followup<=today).length;
+    document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long'});
+
+    const stageCounts={};
+    leads.forEach(l=>{ stageCounts[l.stage]=(stageCounts[l.stage]||0)+1; });
+    const total = leads.length||1;
+    const barEl = document.getElementById('pipeline-bar');
+    const legEl = document.getElementById('pipeline-legend');
+    barEl.innerHTML=''; legEl.innerHTML='';
+    Object.entries(STAGE_COLORS).forEach(([stage,color])=>{
+      const cnt=stageCounts[stage]||0;
+      if(cnt>0){
+        const pct=Math.round((cnt/total)*100);
+        barEl.innerHTML+=`<div class="pipeline-seg" style="flex:${cnt};background:${color}" title="${stage}: ${cnt}">${pct}%</div>`;
+        legEl.innerHTML+=`<div class="legend-item"><div class="legend-dot" style="background:${color}"></div>${stage} (${cnt})</div>`;
+      }
+    });
+
+    // Manager chart
+    const mgrCounts={};
+    leads.forEach(l=>{ const m=l.assigned_to||'Unassigned'; mgrCounts[m]=(mgrCounts[m]||0)+1; });
+    const maxCount=Math.max(...Object.values(mgrCounts),1);
+    const chartEl=document.getElementById('manager-chart');
+    if(Object.keys(mgrCounts).length===0){
+      chartEl.innerHTML='<p style="color:var(--muted);font-size:13px">No leads yet.</p>';
+    } else {
+      chartEl.innerHTML=Object.entries(mgrCounts)
+        .sort((a,b)=>b[1]-a[1])
+        .map(([name,count])=>{
+          const pct=Math.round((count/maxCount)*100);
+          const isAdmin=(name===ADMIN_EMAIL.split('@')[0])||DB.managers.find(m=>m.name===name&&m.email===ADMIN_EMAIL);
+          return `<div class="mgr-row">
+            <div class="mgr-name">${name}${isAdmin?'<span class="role-badge">ADMIN</span>':''}</div>
+            <div class="mgr-bar-wrap"><div class="mgr-bar" style="width:${pct}%"></div></div>
+            <div class="mgr-count">${count}</div>
+          </div>`;
+        }).join('');
+    }
+
+    const tbody=document.getElementById('dash-recent-tbody');
+    const recent=leads.slice(0,8);
+    if(!recent.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="7">No records yet. Add your first lead!</td></tr>'; return; }
+    tbody.innerHTML=recent.map(l=>{
+      const fu=l.next_followup;
+      const fuClass=Fmt.isOverdue(fu)?'overdue':'';
+      return `<tr>
+        <td><strong>${l.company_name}</strong></td>
+        <td><span class="badge badge-lead" style="font-size:10px">${l.segment||'—'}</span></td>
+        <td>${Fmt.stageBadge(l.stage)}</td>
+        <td>${l.assigned_to||'—'}</td>
+        <td class="${fuClass}">${Fmt.date(fu)}</td>
+        <td>${Fmt.commission(l.commission_pct)}</td>
+        <td>${Fmt.ageLabel(l.created_at)}</td>
+      </tr>`;
+    }).join('');
+  }
+};
+
+// ── CRM ───────────────────────────────────────────────────────────────────────
+const CRM = {
+  filter(){
+    const q  = document.getElementById('crm-search').value.toLowerCase();
+    const sf = document.getElementById('crm-stage-filter').value;
+    const seg= document.getElementById('crm-seg-filter').value;
+    const filtered = DB.leads.filter(l=>
+      (!q  || (l.company_name||'').toLowerCase().includes(q)||(l.contact_person||'').toLowerCase().includes(q)) &&
+      (!sf || l.stage===sf) &&
+      (!seg|| l.segment===seg)
+    );
+    this.render(filtered);
+  },
+
+  render(data){
+    const leads=data||DB.leads;
+    const tbody=document.getElementById('crm-tbody');
+    if(!leads.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="10">No records. Hit "+ Add Lead" to get started.</td></tr>'; return; }
+    const today=new Date().toISOString().split('T')[0];
+    const isAdmin = currentUserEmail === ADMIN_EMAIL;
+    tbody.innerHTML=leads.map((l,i)=>{
+      const fu=l.next_followup;
+      const fuClass=Fmt.isOverdue(fu)?'overdue':'';
+      const phone=l.contact_phone?`<a href="tel:${l.contact_phone}" style="font-size:11px;color:var(--muted)">${l.contact_phone}</a>`:'';
+      const wa=l.contact_phone?`<button class="whatsapp-btn" onclick="window.open('https://wa.me/${l.contact_phone.replace(/\D/g,'')}','_blank')">WA</button>`:'';
+      // Edit: admin OR the manager who created this lead
+      const canEdit = isAdmin || l.created_by === currentUserEmail;
+      // Delete: admin only
+      const canDelete = isAdmin;
+      const editBtn = canEdit ? `<button class="btn btn-sm btn-edit" onclick="CRM.openModal('${l.id}')">Edit</button>` : '';
+      const delBtn  = canDelete ? `<button class="btn btn-sm btn-del" onclick="CRM.delete('${l.id}')">Del</button>` : '';
+      return `<tr>
+        <td style="color:var(--muted);font-size:11px">TL-${String(i+1).padStart(3,'0')}</td>
+        <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}</td>
+        <td><span class="badge badge-lead" style="font-size:10px">${l.segment||'—'}</span></td>
+        <td>${Fmt.stageBadge(l.stage)}</td>
+        <td>${Fmt.priorityBadge(l.priority)}</td>
+        <td>${l.assigned_to||'—'}</td>
+        <td class="${fuClass}">${Fmt.date(fu)}</td>
+        <td>${Fmt.commission(l.commission_pct)}</td>
+        <td>${Fmt.ageLabel(l.created_at)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          ${wa}${editBtn}${delBtn}
+        </td>
+      </tr>`;
+    }).join('');
+  },
+
+  openModal(id){
+    document.getElementById('crm-modal-title').textContent = id ? 'Edit Lead' : 'Add New Lead / Partner';
+    document.getElementById('crm-edit-id').value = id||'';
+    document.getElementById('f-meeting-checkbox').checked=false;
+    document.getElementById('meeting-date-box').style.display='none';
+    document.getElementById('f-meeting-date').value='';
+    document.getElementById('notes-char-count').textContent='(0 / 50 min)';
+    document.getElementById('notes-char-count').className='char-count';
+    populateManagerDropdown('f-assigned');
+
+    if(id){
+      const l=DB.leads.find(x=>x.id===id);
+      if(!l) return;
+      document.getElementById('f-company').value       =l.company_name||'';
+      document.getElementById('f-category').value      =l.category||'Lead';
+      document.getElementById('f-segment').value       =l.segment||'';
+      document.getElementById('f-city').value          =l.city||'';
+      document.getElementById('f-contact-person').value=l.contact_person||'';
+      document.getElementById('f-contact-phone').value =l.contact_phone||'';
+      document.getElementById('f-contact-email').value =l.contact_email||'';
+      document.getElementById('f-source').value        =l.source||'';
+      document.getElementById('f-stage').value         =l.stage||'First Outreach';
+      document.getElementById('f-priority').value      =l.priority||'Medium';
+      document.getElementById('f-assigned').value      =l.assigned_to||'';
+      document.getElementById('f-commission').value    =l.commission_pct||'';
+      document.getElementById('f-followup').value      =l.next_followup||'';
+      document.getElementById('f-notes').value         =l.notes||'';
+      if(l.meeting_date){
+        document.getElementById('f-meeting-checkbox').checked=true;
+        document.getElementById('meeting-date-box').style.display='block';
+        document.getElementById('f-meeting-date').value=l.meeting_date;
+        document.getElementById('f-meeting-time').value=l.meeting_time||'';
+        document.getElementById('f-meeting-place').value=l.meeting_place||'';
+      }
+      const nc=l.notes?l.notes.length:0;
+      document.getElementById('notes-char-count').textContent=`(${nc} / 50 min)`;
+      document.getElementById('notes-char-count').className='char-count'+(nc>=50?' ok':'');
+    } else {
+      ['f-company','f-contact-person','f-contact-phone','f-contact-email',
+       'f-commission','f-followup','f-notes',
+       'f-meeting-time','f-meeting-place'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f-city').value='';
+      document.getElementById('f-source').value='';
+      document.getElementById('f-stage').value='First Outreach';
+      document.getElementById('f-priority').value='Medium';
+      document.getElementById('f-category').value='Lead';
+      document.getElementById('f-segment').value='';
+    }
+    document.getElementById('crm-modal').classList.add('open');
+  },
+
+  closeModal(){ document.getElementById('crm-modal').classList.remove('open'); },
+
+  toggleMeetingDate(){
+    const checked=document.getElementById('f-meeting-checkbox').checked;
+    document.getElementById('meeting-date-box').style.display=checked?'block':'none';
+    if(!checked){
+      document.getElementById('f-meeting-date').value='';
+      document.getElementById('f-meeting-time').value='';
+      document.getElementById('f-meeting-place').value='';
+    }
+  },
+
+  updateCharCount(){
+    const n=document.getElementById('f-notes').value.length;
+    const el=document.getElementById('notes-char-count');
+    el.textContent=`(${n} / 50 min)`;
+    el.className='char-count'+(n>=50?' ok':'');
+  },
+
+  async save(){
+    const company=document.getElementById('f-company').value.trim();
+    const contactPerson=document.getElementById('f-contact-person').value.trim();
+    const contactPhone=document.getElementById('f-contact-phone').value.trim();
+    const assignedTo=document.getElementById('f-assigned').value;
+    const followup=document.getElementById('f-followup').value;
+    const notes=document.getElementById('f-notes').value.trim();
+    const segment=document.getElementById('f-segment').value;
+
+    if(!company){ Toast.show('Company name is required','error'); return; }
+    if(!segment){ Toast.show('Please select a segment','error'); return; }
+    if(!contactPerson){ Toast.show('Contact person name is required','error'); return; }
+    if(!contactPhone){ Toast.show('Contact phone is required','error'); return; }
+    if(!assignedTo){ Toast.show('Please assign a manager','error'); return; }
+    if(!followup){ Toast.show('Next follow-up date is required','error'); return; }
+    if(notes.length<50){ Toast.show(`Notes must be at least 50 characters (currently ${notes.length})`,'error'); return; }
+
+    const meetingChecked=document.getElementById('f-meeting-checkbox').checked;
+    const meetingDate=meetingChecked?document.getElementById('f-meeting-date').value:null;
+    const meetingTime=meetingChecked?document.getElementById('f-meeting-time').value:null;
+    const meetingPlace=meetingChecked?document.getElementById('f-meeting-place').value.trim():null;
+    const editId=document.getElementById('crm-edit-id').value;
+
+    const payload={
+      ...(editId?{id:editId}:{}),
+      company_name:company, category:document.getElementById('f-category').value,
+      segment, city:document.getElementById('f-city').value,
+      contact_person:contactPerson, contact_phone:contactPhone,
+      contact_email:document.getElementById('f-contact-email').value,
+      source:document.getElementById('f-source').value,
+      stage:document.getElementById('f-stage').value,
+      priority:document.getElementById('f-priority').value,
+      assigned_to:assignedTo,
+      commission_pct:document.getElementById('f-commission').value||null,
+      next_followup:followup,
+      meeting_date:meetingDate||null,
+      meeting_time:meetingTime||null,
+      meeting_place:meetingPlace||null,
+      notes, meeting_scheduled:!!meetingDate,
+      ...(editId ? {} : { created_by: currentUserEmail }),
+    };
+
+    try{
+      await DB.upsertLead(payload);
+      Toast.show(editId?'✅ Lead updated!':'✅ Lead added!','success');
+      this.closeModal();
+      await DB.fetchLeads(); this.render(); Dashboard.load();
+    } catch(e){ Toast.show('Error: '+e.message,'error'); }
+  },
+
+  async delete(id){
+    if(!confirm('Delete this lead? This cannot be undone.')) return;
+    try{ await DB.deleteLead(id); Toast.show('Lead deleted','info'); await DB.fetchLeads(); this.render(); Dashboard.load(); }
+    catch(e){ Toast.show('Error: '+e.message,'error'); }
+  }
+};
+
+// ── ACTIVITY ──────────────────────────────────────────────────────────────────
+const Activity = {
+  filter(){
+    const q  = document.getElementById('act-search').value.toLowerCase();
+    const tf = document.getElementById('act-type-filter').value;
+    const mf = document.getElementById('act-mgr-filter').value;
+    const filtered=DB.activities.filter(a=>
+      (!q||(a.company_name||'').toLowerCase().includes(q)||(a.manager||'').toLowerCase().includes(q))&&
+      (!tf||a.activity_type===tf)&&
+      (!mf||a.manager===mf)
+    );
+    this.render(filtered);
+  },
+
+  populateMgrFilter(){
+    const sel=document.getElementById('act-mgr-filter');
+    const cur=sel.value;
+    sel.innerHTML='<option value="">All Managers</option>';
+    const mgrs=[...new Set(DB.activities.map(a=>a.manager).filter(Boolean))];
+    mgrs.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; if(m===cur)o.selected=true; sel.appendChild(o); });
+  },
+
+  renderDailySummary(){
+    const today=new Date().toISOString().split('T')[0];
+    const todayActs=DB.activities.filter(a=>a.activity_date===today);
+    const grid=document.getElementById('act-summary-grid');
+    if(!todayActs.length){ grid.innerHTML='<p style="color:var(--muted);font-size:13px">No activities logged today yet.</p>'; return; }
+    const byMgr={};
+    todayActs.forEach(a=>{
+      const m=a.manager||'Unassigned';
+      if(!byMgr[m]) byMgr[m]={total:0,calls:0,meetings:0,emails:0,wa:0,positive:0,neutral:0,negative:0,totalMins:0,nextActions:[]};
+      byMgr[m].total++;
+      if(a.activity_type==='Call') byMgr[m].calls++;
+      if(a.activity_type==='Meeting') byMgr[m].meetings++;
+      if(a.activity_type==='Email') byMgr[m].emails++;
+      if(a.activity_type==='WhatsApp') byMgr[m].wa++;
+      if(a.sentiment==='Positive') byMgr[m].positive++;
+      if(a.sentiment==='Neutral') byMgr[m].neutral++;
+      if(a.sentiment==='Negative') byMgr[m].negative++;
+      if(a.duration_mins) byMgr[m].totalMins+=parseInt(a.duration_mins)||0;
+      if(a.next_step) byMgr[m].nextActions.push(a.next_step);
+    });
+    grid.innerHTML=Object.entries(byMgr).map(([name,s])=>`
+      <div class="mgr-summary-card">
+        <h5>${name}</h5>
+        <div class="mgr-summary-stat">Total Activities <span>${s.total}</span></div>
+        ${s.calls?`<div class="mgr-summary-stat">Calls <span>${s.calls}</span></div>`:''}
+        ${s.meetings?`<div class="mgr-summary-stat">Meetings <span>${s.meetings}</span></div>`:''}
+        ${s.emails?`<div class="mgr-summary-stat">Emails <span>${s.emails}</span></div>`:''}
+        ${s.wa?`<div class="mgr-summary-stat">WhatsApp <span>${s.wa}</span></div>`:''}
+        ${s.totalMins?`<div class="mgr-summary-stat">Time Spent <span>${s.totalMins} mins</span></div>`:''}
+        <div class="mgr-summary-stat">Positive <span style="color:var(--success)">${s.positive}</span></div>
+        <div class="mgr-summary-stat">Negative <span style="color:var(--danger)">${s.negative}</span></div>
+        ${s.nextActions.length?`<div style="margin-top:8px;font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Next Actions</div>
+        ${s.nextActions.slice(0,2).map(n=>`<div style="font-size:11px;color:var(--text);margin-top:3px;padding:4px 6px;background:var(--border);border-radius:5px;">→ ${n}</div>`).join('')}`:''}
+      </div>`).join('');
+  },
+
+  render(data){
+    const acts=data||DB.activities;
+    const isViewer=currentUserRole==='Viewer';
+    const tbody=document.getElementById('act-tbody');
+    if(!acts.length){ tbody.innerHTML='<tr class="empty-row"><td colspan="10">No activities logged yet.</td></tr>'; return; }
+    const sentimentBadge={Positive:'positive',Neutral:'neutral',Negative:'negative'};
+    tbody.innerHTML=acts.map(a=>{
+      const fu=a.followup_date;
+      const fuClass=Fmt.isOverdue(fu)?'overdue':'';
+      const sentBadge=a.sentiment?`<span class="badge badge-${sentimentBadge[a.sentiment]||'neutral'}" style="font-size:10px">${a.sentiment}</span>`:'—';
+      const actions=isViewer?'':`<td style="display:flex;gap:4px">
+          <button class="btn btn-sm btn-edit" onclick="Activity.openModal('${a.id}')">Edit</button>
+          <button class="btn btn-sm btn-del" onclick="Activity.deleteAct('${a.id}')">Del</button>
+        </td>`;
+      return `<tr>
+        <td>${Fmt.date(a.activity_date)}</td>
+        <td><strong>${a.company_name||'—'}</strong></td>
+        <td><span class="badge badge-lead" style="font-size:10px">${a.activity_type||'—'}</span></td>
+        <td>${a.manager||'—'}</td>
+        <td>${sentBadge}</td>
+        <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.outcome||''}">${a.outcome||'—'}</td>
+        <td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${a.next_step||''}">${a.next_step||'—'}</td>
+        <td class="${fuClass}">${Fmt.date(fu)}</td>
+        <td>${a.duration_mins?a.duration_mins+'m':'—'}</td>
+        ${actions}
+      </tr>`;
+    }).join('');
+    this.renderDailySummary();
+    this.populateMgrFilter();
+  },
+
+  openModal(id){
+    document.getElementById('act-edit-id').value=id||'';
+    const today=new Date().toISOString().split('T')[0];
+    populateManagerDropdown('af-manager');
+    if(id){
+      const a=DB.activities.find(x=>x.id===id);
+      if(!a) return;
+      document.getElementById('af-company').value   =a.company_name||'';
+      document.getElementById('af-type').value      =a.activity_type||'Call';
+      document.getElementById('af-manager').value   =a.manager||'';
+      document.getElementById('af-date').value      =a.activity_date||today;
+      document.getElementById('af-outcome').value   =a.outcome||'';
+      document.getElementById('af-next-step').value =a.next_step||'';
+      document.getElementById('af-followup').value  =a.followup_date||'';
+      document.getElementById('af-duration').value  =a.duration_mins||'';
+      document.getElementById('af-sentiment').value =a.sentiment||'';
+      document.getElementById('af-notes').value     =a.notes||'';
+    } else {
+      ['af-company','af-outcome','af-next-step','af-followup','af-duration','af-notes'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('af-date').value=today;
+      document.getElementById('af-type').value='Call';
+      document.getElementById('af-sentiment').value='';
+    }
+    document.getElementById('act-modal').classList.add('open');
+  },
+  closeModal(){ document.getElementById('act-modal').classList.remove('open'); },
+
+  async save(){
+    const company  =document.getElementById('af-company').value.trim();
+    const manager  =document.getElementById('af-manager').value;
+    const outcome  =document.getElementById('af-outcome').value.trim();
+    const nextStep =document.getElementById('af-next-step').value.trim();
+    const sentiment=document.getElementById('af-sentiment').value;
+    if(!company)  { Toast.show('Company name is required','error'); return; }
+    if(!manager)  { Toast.show('Please select a manager','error'); return; }
+    if(!outcome)  { Toast.show('Outcome is required','error'); return; }
+    if(!nextStep) { Toast.show('Next action is required','error'); return; }
+    if(!sentiment){ Toast.show('Please select a sentiment','error'); return; }
+    const editId=document.getElementById('act-edit-id').value;
+    const payload={
+      ...(editId?{id:editId}:{}),
+      company_name:company, activity_type:document.getElementById('af-type').value,
+      manager, activity_date:document.getElementById('af-date').value||null,
+      outcome, next_step:nextStep, sentiment,
+      followup_date:document.getElementById('af-followup').value||null,
+      duration_mins:document.getElementById('af-duration').value||null,
+      notes:document.getElementById('af-notes').value,
+    };
+    try{
+      await DB.upsertActivity(payload);
+      Toast.show(editId?'✅ Updated!':'✅ Activity logged!','success');
+      this.closeModal(); await DB.fetchActivities(); this.render();
+    } catch(e){ Toast.show('Error: '+e.message,'error'); }
+  },
+
+  async deleteAct(id){
+    if(!confirm('Delete this activity?')) return;
+    try{ await DB.deleteActivity(id); Toast.show('Deleted','info'); await DB.fetchActivities(); this.render(); }
+    catch(e){ Toast.show('Error: '+e.message,'error'); }
+  }
+};
+
+// ── TEAM ──────────────────────────────────────────────────────────────────────
+const Team = {
+  load(){
+    const list=document.getElementById('team-list');
+    if(!DB.managers.length){ list.innerHTML='<p style="color:var(--muted);font-size:13px">No team members yet. Add below.</p>'; return; }
+    list.innerHTML=DB.managers.map(m=>{
+      const roleColor=m.role==='Viewer'?'#0F3460':m.role==='Admin'?'#7D3C98':'#0B5345';
+      const roleBg   =m.role==='Viewer'?'#EAF4FB':m.role==='Admin'?'#F4ECF7':'#EAFAF1';
+      return `<div class="team-member">
+        <div class="team-member-info">
+          <span class="team-member-name">${m.name}
+            <span style="font-size:10px;background:${roleBg};color:${roleColor};padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:700;">${m.role||'Manager'}</span>
+          </span>
+          <span class="team-member-email">${m.email}</span>
+        </div>
+        <button class="btn btn-sm btn-del" onclick="Team.remove('${m.id}')">Remove</button>
+      </div>`;
+    }).join('');
+  },
+  async addMember(){
+    const name =document.getElementById('new-member-name').value.trim();
+    const email=document.getElementById('new-member-email').value.trim();
+    const role =document.getElementById('new-member-role').value;
+    if(!name||!email){ Toast.show('Name and email are required','error'); return; }
+    try{
+      await DB.addTeamMember({name,email,role});
+      Toast.show(`✅ ${name} added as ${role}!`,'success');
+      document.getElementById('new-member-name').value='';
+      document.getElementById('new-member-email').value='';
+      await DB.fetchManagers(); this.load();
+    } catch(e){ Toast.show('Error: '+e.message,'error'); }
+  },
+  async remove(id){
+    if(!confirm('Remove this team member?')) return;
+    try{ await DB.deleteTeamMember(id); Toast.show('Removed','info'); await DB.fetchManagers(); this.load(); }
+    catch(e){ Toast.show('Error: '+e.message,'error'); }
+  }
+};
+
+// ── EOD POSTER (PNG) ──────────────────────────────────────────────────────────
+const Slack = {
+  sendEOD(){ this.generatePoster(); },
+  generatePoster(){
+    const leads    = DB.leads;
+    const acts     = DB.activities;
+    const today    = new Date().toISOString().split('T')[0];
+    const todayActs= acts.filter(a=>a.activity_date===today);
+    const dateLabel= new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    const won      = leads.filter(l=>l.stage==='Closed & Won').length;
+    const hot      = leads.filter(l=>l.priority==='High').length;
+    const overdue  = leads.filter(l=>l.next_followup&&l.next_followup<today);
+    const stageCounts={};
+    leads.forEach(l=>{ stageCounts[l.stage]=(stageCounts[l.stage]||0)+1; });
+
+    // Group by manager
+    const byMgr={};
+    todayActs.forEach(a=>{
+      const m=a.manager||'Unassigned';
+      if(!byMgr[m]) byMgr[m]=[];
+      byMgr[m].push(a);
+    });
+
+    // Canvas setup — A4 proportions at 2x for sharpness
+    const W=900, PAD=52;
+    // Calculate height dynamically
+    let estimatedRows = 0;
+    Object.values(byMgr).forEach(acts=>{ estimatedRows += acts.length + 2; });
+    const H = Math.max(1100, 520 + estimatedRows * 44 + overdue.length * 28 + 120);
+    const canvas = document.createElement('canvas');
+    canvas.width=W; canvas.height=H;
+    const c = canvas.getContext('2d');
+
+    // Colors
+    const NAV='#1A1A2E', ACCENT='#F5C31D', WHITE='#FFFFFF';
+    const MUTED='#8395A7', DIVIDER='rgba(255,255,255,0.08)';
+    const GREEN='#00B894', RED='#E17055', BLUE='#0F3460';
+
+    // Helper functions
+    const text=(str,x,y,font,color,align='left')=>{
+      c.font=font; c.fillStyle=color; c.textAlign=align;
+      c.fillText(str,x,y); c.textAlign='left';
+    };
+    const rect=(x,y,w,h,r,color)=>{
+      c.fillStyle=color; c.beginPath();
+      c.roundRect(x,y,w,h,r); c.fill();
+    };
+    const line=(x1,y1,x2,y2,color,lw=1)=>{
+      c.strokeStyle=color; c.lineWidth=lw;
+      c.beginPath(); c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
+    };
+
+    // ── BACKGROUND
+    c.fillStyle=NAV; c.fillRect(0,0,W,H);
+
+    // ── HEADER BAR
+    rect(0,0,W,80,0,ACCENT);
+    // Brand name
+    c.font='bold 22px Arial'; c.fillStyle=NAV; c.textAlign='left';
+    c.fillText('travlounge',PAD+4,50);
+    // Date
+    c.font='13px Arial'; c.fillStyle=NAV; c.textAlign='right';
+    c.fillText(dateLabel, W-PAD, 50);
+    c.textAlign='left';
+    // EOD label
+    c.font='bold 11px Arial'; c.fillStyle='rgba(26,26,46,0.6)';
+    c.fillText('END OF DAY REPORT', PAD+4, 68);
+
+    let y=120;
+
+    // ── PIPELINE STATS ROW
+    const stats=[
+      {label:'TOTAL LEADS', val:leads.length, color:WHITE},
+      {label:'HOT',         val:hot,          color:'#E94560'},
+      {label:'CLOSED & WON',val:won,          color:GREEN},
+      {label:'ACTIVITIES',  val:todayActs.length, color:ACCENT},
+    ];
+    const sw=(W-PAD*2)/4;
+    stats.forEach((s,i)=>{
+      const sx=PAD+i*sw;
+      rect(sx,y,sw-12,72,8,'rgba(255,255,255,0.05)');
+      text(s.val.toString(), sx+16, y+44, 'bold 30px Arial', s.color);
+      text(s.label, sx+16, y+62, '10px Arial', MUTED);
+    });
+    y+=96;
+
+    // ── PIPELINE BAR
+    line(PAD,y,W-PAD,y,DIVIDER);
+    y+=20;
+    text('PIPELINE', PAD, y, 'bold 11px Arial', MUTED);
+    y+=14;
+    const stageColors={'First Outreach':'#AED6F1','Meeting Done':'#5DADE2','Negotiation':'#7D3C98','Closed & Won':GREEN,'Rejected':RED};
+    const total=leads.length||1;
+    let bx=PAD;
+    const bw=W-PAD*2, bh=10;
+    rect(bx,y,bw,bh,5,'rgba(255,255,255,0.08)');
+    Object.entries(stageCounts).forEach(([stage,cnt])=>{
+      if(!cnt) return;
+      const sw2=Math.round((cnt/total)*bw);
+      rect(bx,y,sw2,bh,0,stageColors[stage]||'#8395A7');
+      bx+=sw2;
+    });
+    y+=20;
+    // Legend
+    bx=PAD;
+    Object.entries(stageCounts).forEach(([stage,cnt])=>{
+      if(!cnt) return;
+      rect(bx,y,8,8,2,stageColors[stage]||'#8395A7');
+      text(`${stage} (${cnt})`, bx+12, y+8, '10px Arial', MUTED);
+      bx+=c.measureText(`${stage} (${cnt})`).width+28;
+    });
+    y+=30;
+
+    // ── ACTIVITIES SECTION
+    line(PAD,y,W-PAD,y,DIVIDER);
+    y+=24;
+    text("TODAY'S ACTIVITIES", PAD, y, 'bold 11px Arial', MUTED);
+    y+=20;
+
+    if(Object.keys(byMgr).length===0){
+      text('No activities logged today', PAD, y, '13px Arial', MUTED);
+      y+=30;
+    } else {
+      Object.entries(byMgr).forEach(([mgr,macts])=>{
+        // Manager name row
+        rect(PAD,y-14,W-PAD*2,24,4,'rgba(255,255,255,0.04)');
+        text(mgr, PAD+12, y+4, 'bold 13px Arial', WHITE);
+        const sentMap={Positive:'Positive',Neutral:'Neutral',Negative:'Negative'};
+        const pos=macts.filter(a=>a.sentiment==='Positive').length;
+        const neg=macts.filter(a=>a.sentiment==='Negative').length;
+        text(`${macts.length} activities  ·  ${pos} positive  ·  ${neg} negative`, W-PAD, y+4, '11px Arial', MUTED, 'right');
+        y+=32;
+        macts.forEach(a=>{
+          const sentColor=a.sentiment==='Positive'?GREEN:a.sentiment==='Negative'?RED:MUTED;
+          rect(PAD+12,y-12,3,28,2,sentColor);
+          text(`${a.activity_type}  —  ${a.company_name}`, PAD+24, y, '12px Arial', WHITE);
+          text(a.sentiment||'', W-PAD, y, '11px Arial', sentColor, 'right');
+          y+=18;
+          text(a.outcome||'—', PAD+24, y, '11px Arial', MUTED);
+          y+=16;
+          text(`Next: ${a.next_step||'—'}`, PAD+24, y, 'italic 11px Arial', ACCENT);
+          y+=20;
+        });
+        y+=8;
+      });
+    }
+
+    // ── OVERDUE SECTION
+    line(PAD,y,W-PAD,y,DIVIDER);
+    y+=24;
+    text('OVERDUE FOLLOW-UPS', PAD, y, 'bold 11px Arial', MUTED);
+    y+=18;
+    if(overdue.length===0){
+      text('No overdue follow-ups', PAD, y, '12px Arial', GREEN);
+      y+=24;
+    } else {
+      overdue.forEach(l=>{
+        rect(PAD,y-12,4,18,2,RED);
+        text(`${l.company_name}  ·  ${l.assigned_to||'?'}  ·  Due ${Fmt.date(l.next_followup)}`, PAD+12, y, '12px Arial', WHITE);
+        y+=24;
+      });
+    }
+
+    // ── FOOTER
+    y=H-40;
+    line(PAD,y-10,W-PAD,y-10,DIVIDER);
+    text('travlounge revenue platform', PAD, y+16, '11px Arial', MUTED);
+    text(`Generated ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})} IST`, W-PAD, y+16, '11px Arial', MUTED, 'right');
+
+    // ── DOWNLOAD
+    canvas.toBlob(blob=>{
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url; a.download=`travlounge-eod-${today}.png`; a.click();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      Toast.show('EOD poster downloaded','success');
+    },'image/png');
+  }
+};
+
+// ── SETTINGS ──────────────────────────────────────────────────────────────────
+const Settings = {
+  load(){
+    document.getElementById('cfg-slack').value       =CFG.slackUrl;
+    document.getElementById('cfg-slack-channel').value=CFG.slackChannel;
+    document.getElementById('cfg-sb-url').value      =CFG.sbUrl;
+    document.getElementById('cfg-sb-key').value      =CFG.sbKey;
+  },
+  save(){
+    localStorage.setItem('tl_slack_url',document.getElementById('cfg-slack').value.trim());
+    localStorage.setItem('tl_slack_ch', document.getElementById('cfg-slack-channel').value.trim());
+    const newUrl=document.getElementById('cfg-sb-url').value.trim();
+    const newKey=document.getElementById('cfg-sb-key').value.trim();
+    const reload=newUrl!==CFG.sbUrl||newKey!==CFG.sbKey;
+    localStorage.setItem('tl_sb_url',newUrl);
+    localStorage.setItem('tl_sb_key',newKey);
+    Toast.show('✅ Settings saved!','success');
+    if(reload) setTimeout(()=>location.reload(),1000);
+  }
+};
+
+// ── DARK MODE ─────────────────────────────────────────────────────────────────
+const DarkMode = {
+  init(){
+    const saved = localStorage.getItem('tl_dark');
+    if(saved === 'true') this.apply(true);
+  },
+  toggle(){
+    const isDark = document.body.classList.contains('dark');
+    this.apply(!isDark);
+  },
+  apply(dark){
+    document.body.classList.toggle('dark', dark);
+    localStorage.setItem('tl_dark', dark);
+    document.getElementById('dark-icon').textContent  = dark ? '☀️' : '🌙';
+    document.getElementById('dark-label').textContent = dark ? 'Light Mode' : 'Dark Mode';
+  }
+};
+
+// ── ROUTER ────────────────────────────────────────────────────────────────────
+const Router = {
+  go(view){
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.getElementById('view-'+view).classList.add('active');
+    document.getElementById('nav-'+view).classList.add('active');
+    closeSidebar();
+    if(view==='settings') Settings.load();
+    if(view==='team') Team.load();
+  }
+};
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+(async function init(){
+  DarkMode.init();
+  initSupabase();
+  const { data:{ session } } = await sb.auth.getSession();
+  if(session) await Auth.onLogin();
+  else document.getElementById('login-screen').style.display='flex';
+})();
+
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') Auth.login(); });
+</script>
+</body>
+</html>
