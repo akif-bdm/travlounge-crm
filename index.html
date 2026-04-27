@@ -55,6 +55,20 @@ body.dark .config-field input{background:var(--input-bg);color:var(--text);borde
 body.dark .dark-toggle{background:rgba(255,255,255,.08);color:#E2E8F0;}
 body.dark .dark-toggle:hover{background:rgba(255,255,255,.13);}
 
+/* VIEWER MODE — hide all write actions at CSS level (belt + suspenders on top of RLS) */
+body.viewer-mode .btn-edit,
+body.viewer-mode .btn-del,
+body.viewer-mode #btn-add-lead,
+body.viewer-mode #btn-log-activity,
+body.viewer-mode .add-member-form,
+body.viewer-mode .whatsapp-btn,
+body.viewer-mode [data-viewer-hide]{display:none!important;}
+body.viewer-mode input,
+body.viewer-mode select,
+body.viewer-mode textarea{pointer-events:none;opacity:.7;}
+body.viewer-mode .btn-primary{pointer-events:none;opacity:.5;}
+.viewer-banner{background:#0F3460;color:#fff;text-align:center;padding:6px;font-size:12px;font-weight:600;letter-spacing:.5px;}
+
 /* LOGIN */
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--nav);}
 .login-card{background:var(--white);border-radius:16px;padding:48px 40px;width:380px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.3);}
@@ -742,10 +756,13 @@ const Auth = {
     const isViewer = currentUserRole === 'Viewer';
     document.getElementById('sidebar-user-name').textContent  = user.email.split('@')[0] + (isAdmin?' [Admin]':isViewer?' [Viewer]':'');
     document.getElementById('sidebar-user-email').textContent = user.email;
-    // Hide action elements for viewers
+    // Viewer mode — lock down entire UI + show banner
     if(isViewer){
-      document.querySelectorAll('#btn-log-activity').forEach(el=>el.style.display='none');
-      document.querySelector('[onclick="CRM.openModal()"]').style.display='none';
+      document.body.classList.add('viewer-mode');
+      const banner = document.createElement('div');
+      banner.className = 'viewer-banner';
+      banner.textContent = 'VIEW ONLY — You do not have permission to add, edit, or delete records';
+      document.getElementById('app').prepend(banner);
     }
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
@@ -923,8 +940,8 @@ const CRM = {
       const fuClass=Fmt.isOverdue(fu)?'overdue':'';
       const phone=l.contact_phone?`<a href="tel:${l.contact_phone}" style="font-size:11px;color:var(--muted)">${l.contact_phone}</a>`:'';
       const wa=l.contact_phone?`<button class="whatsapp-btn" onclick="window.open('https://wa.me/${l.contact_phone.replace(/\D/g,'')}','_blank')">WA</button>`:'';
-      // Edit: admin OR the manager who created this lead
-      const canEdit = isAdmin || l.created_by === currentUserEmail;
+      // Edit: admin OR the manager who created this lead — never viewers
+      const canEdit = currentUserRole !== 'Viewer' && (isAdmin || l.created_by === currentUserEmail);
       // Delete: admin only
       const canDelete = isAdmin;
       const editBtn = canEdit ? `<button class="btn btn-sm btn-edit" onclick="CRM.openModal('${l.id}')">Edit</button>` : '';
