@@ -511,6 +511,13 @@ body.dark .mgr-summary-card{background:#13132a;}
               <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires reload.</p>
               <button class="btn btn-add btn-sm" onclick="Settings.save()">Save & Reload</button>
             </div>
+            <div class="settings-card">
+              <h4>🔒 Change Password</h4>
+              <p>Set or update your account password.</p>
+              <div class="config-field"><label>New Password</label><input type="password" id="cfg-new-pass" placeholder="Minimum 6 characters"/></div>
+              <div class="config-field"><label>Confirm Password</label><input type="password" id="cfg-confirm-pass" placeholder="Repeat new password"/></div>
+              <button class="btn btn-add btn-sm" onclick="Auth.changePassword()">Update Password</button>
+            </div>
             <div class="settings-card" style="grid-column:1/-1">
               <h4>📖 Quick Setup Guide</h4>
               <p><strong>Morning email reminders</strong> are already set up via Supabase Edge Function (meeting-reminders) — fires at 8:30 AM IST daily for any meetings scheduled that day.</p>
@@ -753,6 +760,17 @@ const Auth = {
     await sb.auth.signOut();
     document.getElementById('app').style.display='none';
     document.getElementById('login-screen').style.display='flex';
+  },
+  async changePassword(){
+    const np = document.getElementById('cfg-new-pass').value.trim();
+    const cp = document.getElementById('cfg-confirm-pass').value.trim();
+    if(!np || np.length < 6){ Toast.show('Password must be at least 6 characters','error'); return; }
+    if(np !== cp){ Toast.show('Passwords do not match','error'); return; }
+    const { error } = await sb.auth.updateUser({ password: np });
+    if(error){ Toast.show('Error: '+error.message,'error'); return; }
+    document.getElementById('cfg-new-pass').value='';
+    document.getElementById('cfg-confirm-pass').value='';
+    Toast.show('Password updated successfully! Use it next time you log in.','success');
   },
   async onLogin(){
     const { data:{ user } } = await sb.auth.getUser();
