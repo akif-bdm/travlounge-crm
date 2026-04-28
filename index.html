@@ -314,6 +314,11 @@ body.dark .mgr-summary-card{background:#13132a;}
     </div>
     <button class="btn-primary" onclick="Auth.login()">Sign In</button>
     <div class="login-error" id="login-error"></div>
+    <div style="text-align:center;margin-top:14px">
+      <span style="font-size:12px;color:#8395a7">Forgot password? </span>
+      <a href="#" onclick="Auth.sendMagicLink(event)" style="font-size:12px;color:var(--accent2);text-decoration:none;font-weight:600">Send me a login link →</a>
+    </div>
+    <div id="magic-link-msg" style="display:none;margin-top:10px;padding:10px;background:#e8f5e9;border-radius:8px;font-size:12px;color:#2e7d32;text-align:center"></div>
   </div>
 </div>
 
@@ -761,6 +766,21 @@ const Auth = {
     document.getElementById('app').style.display='none';
     document.getElementById('login-screen').style.display='flex';
   },
+  async sendMagicLink(e){
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    if(!email){ document.getElementById('login-error').textContent='Enter your email above first.'; return; }
+    const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser: false } });
+    const msgEl = document.getElementById('magic-link-msg');
+    if(error){
+      document.getElementById('login-error').textContent = error.message;
+    } else {
+      document.getElementById('login-error').textContent='';
+      msgEl.style.display='block';
+      msgEl.textContent=`✅ Login link sent to ${email}. Check your inbox and click the link to get in — no password needed.`;
+    }
+  },
+
   async changePassword(){
     const np = document.getElementById('cfg-new-pass').value.trim();
     const cp = document.getElementById('cfg-confirm-pass').value.trim();
