@@ -651,6 +651,17 @@ body.dark .mgr-summary-card{background:#13132a;}
   </div>
 </div>
 
+<!-- LEAD DETAIL PANEL -->
+<div class="modal-overlay" id="lead-detail-modal" onclick="if(event.target===this)CRM.closeDetail()">
+  <div class="modal" style="width:680px;max-width:100%">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h3 id="ld-title" style="margin:0"></h3>
+      <button class="btn btn-sec" onclick="CRM.closeDetail()" style="padding:6px 14px">✕ Close</button>
+    </div>
+    <div id="ld-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:13px"></div>
+  </div>
+</div>
+
 <!-- ACTIVITY MODAL -->
 <div class="modal-overlay" id="act-modal">
   <div class="modal">
@@ -951,7 +962,7 @@ const CRM = {
       const notesPreview = l.notes ? `<br><span class="notes-preview" onclick="CRM.toggleNote(this)" data-full="${l.notes.replace(/"/g,'&quot;')}" style="font-size:10px;color:var(--accent2);font-style:italic;cursor:pointer" title="Click to expand">${l.notes.length>70?l.notes.substring(0,70)+'… ▼':l.notes}</span>` : '';
       return `<tr>
         <td style="color:var(--muted);font-size:11px">TL-${String(i+1).padStart(3,'0')}</td>
-        <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}${notesPreview}</td>
+        <td><strong style="cursor:pointer;color:var(--accent2);text-decoration:underline dotted" onclick="CRM.viewDetail('${l.id}')">${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}${notesPreview}</td>
         <td><span class="badge badge-lead" style="font-size:10px">${l.segment||'—'}</span></td>
         <td>${Fmt.stageBadge(l.stage)}</td>
         <td>${Fmt.priorityBadge(l.priority)}</td>
@@ -1030,6 +1041,44 @@ const CRM = {
       document.getElementById('f-meeting-time').value='';
       document.getElementById('f-meeting-place').value='';
     }
+  },
+
+  viewDetail(id){
+    const l = DB.leads.find(x=>x.id===id);
+    if(!l) return;
+    document.getElementById('ld-title').textContent = l.company_name;
+    const field = (label, value) => value ? `<div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${label}</div>
+      <div style="font-weight:500;color:var(--text)">${value}</div>
+    </div>` : '';
+    const fullField = (label, value) => value ? `<div style="grid-column:span 2;background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
+      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${label}</div>
+      <div style="font-weight:500;color:var(--text);line-height:1.6;white-space:pre-wrap">${value}</div>
+    </div>` : '';
+    document.getElementById('ld-body').innerHTML = [
+      field('Category', l.category),
+      field('Industry / Segment', l.segment||l.industry),
+      field('City', l.city),
+      field('Stage', l.stage),
+      field('Priority', l.priority),
+      field('Status', l.status),
+      field('Contact Person', l.contact_person),
+      field('Email', l.contact_email),
+      field('Phone', l.contact_phone),
+      field('Assigned Manager', l.assigned_to),
+      field('Added By', l.created_by ? l.created_by.split('@')[0] : ''),
+      field('Commission %', l.commission_pct ? l.commission_pct+'%' : ''),
+      field('Deal Value', l.deal_value ? '₹'+Number(l.deal_value).toLocaleString() : ''),
+      field('Meeting Date', l.meeting_date ? Fmt.date(l.meeting_date) : ''),
+      field('Next Follow-up', l.next_followup ? Fmt.date(l.next_followup) : ''),
+      field('Created On', l.created_at ? l.created_at.split('T')[0] : ''),
+      fullField('Notes', l.notes),
+    ].filter(Boolean).join('');
+    document.getElementById('lead-detail-modal').style.display='flex';
+  },
+
+  closeDetail(){
+    document.getElementById('lead-detail-modal').style.display='none';
   },
 
   toggleNote(el){
