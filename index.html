@@ -20,6 +20,7 @@ body.dark{
   --border:rgba(255,255,255,.09);--shadow:0 2px 16px rgba(0,0,0,.4);
   --input-bg:#1E1E30;--card:#1E1E30;--table-head:#131320;--hover:rgba(233,69,96,.06);
   --modal-overlay:rgba(0,0,0,.7);
+  --accent2:#60a5fa;
 }
 body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .25s,color .25s;}
 
@@ -54,6 +55,43 @@ body.dark tbody tr{border-color:rgba(255,255,255,.06);}
 body.dark .config-field input{background:var(--input-bg);color:var(--text);border-color:var(--border);}
 body.dark .dark-toggle{background:rgba(255,255,255,.08);color:#E2E8F0;}
 body.dark .dark-toggle:hover{background:rgba(255,255,255,.13);}
+body.dark .notes-preview{color:#60a5fa!important;}
+body.dark td strong{color:#E2E8F0;}
+body.dark td a{color:#60a5fa!important;}
+body.dark .mgr-summary-card h5{color:#E2E8F0;}
+body.dark .section-title{color:#CBD5E1;}
+body.dark label{color:#CBD5E1;}
+body.dark .form-group label{color:#CBD5E1;}
+body.dark .config-field label{color:#CBD5E1;}
+body.dark .team-member .member-name{color:#E2E8F0;}
+body.dark .char-count{color:#94A3B8;}
+body.dark code{background:#1E1E30;color:#60a5fa;padding:2px 6px;border-radius:4px;}
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleUp{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+
+.view{display:none;opacity:0;}
+.view.active{display:block;animation:fadeSlideIn .22s ease forwards;}
+
+.modal-overlay{transition:opacity .2s ease;}
+.modal-overlay.open .modal,.modal-overlay[style*="flex"] .modal{animation:scaleUp .22s ease forwards;}
+.modal-overlay{display:none;opacity:0;}
+.modal-overlay.open{display:flex;animation:fadeIn .18s ease forwards;}
+
+/* Button press feel */
+.btn{transition:all .15s ease;}
+.btn:active{transform:scale(.96);opacity:.85;}
+.btn-primary{transition:all .15s ease;}
+.btn-primary:active{transform:scale(.98);}
+.btn-logout{transition:all .15s ease;}
+.nav-item{transition:background .15s ease,color .15s ease,border-color .15s ease;}
+.kpi-card{transition:transform .15s ease,box-shadow .15s ease;}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12);}
+.team-member{transition:background .15s ease;}
+.whatsapp-btn{transition:all .15s ease;}
+.whatsapp-btn:active{transform:scale(.94);}
 
 /* VIEWER MODE — hide all write actions at CSS level (belt + suspenders on top of RLS) */
 body.viewer-mode .btn-edit,
@@ -666,7 +704,7 @@ body.dark .mgr-summary-card{background:#13132a;}
 </div>
 
 <!-- LEAD DETAIL PANEL -->
-<div class="modal-overlay" id="lead-detail-modal" onclick="if(event.target===this)CRM.closeDetail()">
+<div class="modal-overlay" id="lead-detail-modal" onclick="if(event.target===this)CRM.closeDetail()" style="display:none">
   <div class="modal" style="width:680px;max-width:100%">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
       <h3 id="ld-title" style="margin:0"></h3>
@@ -1114,11 +1152,11 @@ const CRM = {
       field('Created On', l.created_at ? l.created_at.split('T')[0] : ''),
       fullField('Notes', l.notes),
     ].filter(Boolean).join('');
-    document.getElementById('lead-detail-modal').style.display='flex';
+    document.getElementById('lead-detail-modal').classList.add('open');
   },
 
   closeDetail(){
-    document.getElementById('lead-detail-modal').style.display='none';
+    document.getElementById('lead-detail-modal').classList.remove('open');
   },
 
   toggleNote(el){
