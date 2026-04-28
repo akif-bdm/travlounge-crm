@@ -948,7 +948,7 @@ const CRM = {
       const canDelete = isAdmin;
       const editBtn = canEdit ? `<button class="btn btn-sm btn-edit" onclick="CRM.openModal('${l.id}')">Edit</button>` : '';
       const delBtn  = canDelete ? `<button class="btn btn-sm btn-del" onclick="CRM.delete('${l.id}')">Del</button>` : '';
-      const notesPreview = l.notes ? `<br><span style="font-size:10px;color:var(--muted);font-style:italic">${l.notes.length>70?l.notes.substring(0,70)+'…':l.notes}</span>` : '';
+      const notesPreview = l.notes ? `<br><span class="notes-preview" onclick="CRM.toggleNote(this)" data-full="${l.notes.replace(/"/g,'&quot;')}" style="font-size:10px;color:var(--accent2);font-style:italic;cursor:pointer" title="Click to expand">${l.notes.length>70?l.notes.substring(0,70)+'… ▼':l.notes}</span>` : '';
       return `<tr>
         <td style="color:var(--muted);font-size:11px">TL-${String(i+1).padStart(3,'0')}</td>
         <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}${notesPreview}</td>
@@ -1029,6 +1029,17 @@ const CRM = {
       document.getElementById('f-meeting-date').value='';
       document.getElementById('f-meeting-time').value='';
       document.getElementById('f-meeting-place').value='';
+    }
+  },
+
+  toggleNote(el){
+    const full = el.getAttribute('data-full');
+    if(el.dataset.expanded==='1'){
+      el.textContent = full.length>70 ? full.substring(0,70)+'… ▼' : full;
+      el.dataset.expanded='0';
+    } else {
+      el.textContent = full + ' ▲';
+      el.dataset.expanded='1';
     }
   },
 
