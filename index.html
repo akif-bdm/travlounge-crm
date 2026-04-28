@@ -405,6 +405,7 @@ body.dark .mgr-summary-card{background:#13132a;}
               <option>Cafe</option><option>Restaurant</option><option>Gym</option><option>Pharmacy</option>
               <option>Coworking</option><option>Laundry</option><option>Automobile</option><option>Travel Agency</option>
             </select>
+            <button class="btn btn-slack" onclick="CRM.exportCSV()">⬇ Export CSV</button>
             <button class="btn btn-add" onclick="CRM.openModal()">+ Add Lead</button>
           </div>
         </div>
@@ -943,9 +944,10 @@ const CRM = {
       const canDelete = isAdmin;
       const editBtn = canEdit ? `<button class="btn btn-sm btn-edit" onclick="CRM.openModal('${l.id}')">Edit</button>` : '';
       const delBtn  = canDelete ? `<button class="btn btn-sm btn-del" onclick="CRM.delete('${l.id}')">Del</button>` : '';
+      const notesPreview = l.notes ? `<br><span style="font-size:10px;color:var(--muted);font-style:italic">${l.notes.length>70?l.notes.substring(0,70)+'…':l.notes}</span>` : '';
       return `<tr>
         <td style="color:var(--muted);font-size:11px">TL-${String(i+1).padStart(3,'0')}</td>
-        <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}</td>
+        <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}${notesPreview}</td>
         <td><span class="badge badge-lead" style="font-size:10px">${l.segment||'—'}</span></td>
         <td>${Fmt.stageBadge(l.stage)}</td>
         <td>${Fmt.priorityBadge(l.priority)}</td>
@@ -1024,6 +1026,40 @@ const CRM = {
       document.getElementById('f-meeting-time').value='';
       document.getElementById('f-meeting-place').value='';
     }
+  },
+
+  exportCSV(){
+    const leads = DB.leads;
+    if(!leads.length){ Toast.show('No leads to export','error'); return; }
+    const headers = ['#','Company','Category','Industry','City','Contact Person','Email','Phone','Stage','Priority','Manager','Added By','Deal Value','Meeting Date','Next Follow-up','Notes','Status','Created At'];
+    const rows = leads.map((l,i)=>[
+      `TL-${String(i+1).padStart(3,'0')}`,
+      l.company_name||'',
+      l.category||'',
+      l.industry||'',
+      l.city||'',
+      l.contact_person||'',
+      l.contact_email||'',
+      l.contact_phone||'',
+      l.stage||'',
+      l.priority||'',
+      l.assigned_to||'',
+      l.created_by||'',
+      l.deal_value||'',
+      l.meeting_date||'',
+      l.next_followup||'',
+      (l.notes||'').replace(/"/g,'""'),
+      l.status||'',
+      l.created_at?l.created_at.split('T')[0]:''
+    ].map(v=>`"${v}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const today = new Date().toISOString().split('T')[0];
+    a.href=url; a.download=`travlounge-leads-${today}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    Toast.show(`Exported ${leads.length} leads as CSV`,'success');
   },
 
   updateCharCount(){
