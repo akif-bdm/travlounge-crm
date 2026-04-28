@@ -405,7 +405,7 @@ body.dark .mgr-summary-card{background:#13132a;}
               <option>Cafe</option><option>Restaurant</option><option>Gym</option><option>Pharmacy</option>
               <option>Coworking</option><option>Laundry</option><option>Automobile</option><option>Travel Agency</option>
             </select>
-            <button class="btn btn-slack" onclick="CRM.exportCSV()">⬇ Export CSV</button>
+            <button class="btn btn-slack" id="btn-export-csv" onclick="CRM.exportCSV()" style="display:none">⬇ Export CSV</button>
             <button class="btn btn-add" onclick="CRM.openModal()">+ Add Lead</button>
           </div>
         </div>
@@ -761,6 +761,10 @@ const Auth = {
     // Viewer mode — silently lock down UI, no banner
     if(isViewer){
       document.body.classList.add('viewer-mode');
+    }
+    // Export CSV — Admin only
+    if(isAdmin){
+      document.getElementById('btn-export-csv').style.display='';
     }
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
