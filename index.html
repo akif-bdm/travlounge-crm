@@ -614,19 +614,19 @@ body.dark .mgr-summary-card{background:#13132a;}
         </div>
         <div class="content">
           <div class="settings-grid">
-            <div class="settings-card">
-              <h4>💬 Slack</h4>
-              <p>Paste your Slack Incoming Webhook URL for EOD reports.</p>
+            <div class="settings-card" id="settings-notifications-card" style="display:none">
+              <h4>🔔 Notifications</h4>
+              <p>Configure where end-of-day summaries are sent.</p>
               <div class="config-field"><label>Webhook URL</label><input type="text" id="cfg-slack" placeholder="https://hooks.slack.com/services/..."/></div>
               <div class="config-field"><label>Channel</label><input type="text" id="cfg-slack-channel" placeholder="#crm-updates"/></div>
               <button class="btn btn-add btn-sm" onclick="Settings.save()">Save</button>
             </div>
-            <div class="settings-card">
-              <h4>🗄️ Supabase</h4>
-              <p>Your database connection. To migrate: pg_dump → restore to new PostgreSQL → update URL below.</p>
-              <div class="config-field"><label>Project URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
-              <div class="config-field"><label>Anon Key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
-              <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires reload.</p>
+            <div class="settings-card" id="settings-connection-card" style="display:none">
+              <h4>🔗 Data Connection</h4>
+              <p>Advanced configuration. Only change these if instructed by your system admin.</p>
+              <div class="config-field"><label>Connection URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
+              <div class="config-field"><label>Access Key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
+              <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires an app reload.</p>
               <button class="btn btn-add btn-sm" onclick="Settings.save()">Save & Reload</button>
             </div>
             <div class="settings-card">
@@ -970,9 +970,11 @@ const Auth = {
     if(isViewer){
       document.body.classList.add('viewer-mode');
     }
-    // Export CSV — Admin only
+    // Admin-only UI elements
     if(isAdmin){
       document.getElementById('btn-export-csv').style.display='';
+      document.getElementById('settings-notifications-card').style.display='';
+      document.getElementById('settings-connection-card').style.display='';
     }
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
