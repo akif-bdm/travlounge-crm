@@ -67,6 +67,29 @@ body.dark .team-member .member-name{color:#E2E8F0;}
 body.dark .char-count{color:#94A3B8;}
 body.dark code{background:#1E1E30;color:#60a5fa;padding:2px 6px;border-radius:4px;}
 
+/* ── ACTIVITY LOG NEW DESIGN ────────────────────────────── */
+.act-type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px;}
+@media(max-width:480px){.act-type-grid{grid-template-columns:repeat(3,1fr);}}
+.act-type-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 4px;font-size:11px;font-weight:600;color:var(--muted);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .15s;}
+.act-type-btn:active{transform:scale(.94);}
+.act-type-btn.selected{background:#e8f1fd;border-color:#378ADD;color:#185FA5;}
+body.dark .act-type-btn{background:#1E1E30;border-color:rgba(255,255,255,.12);color:var(--muted);}
+body.dark .act-type-btn.selected{background:#0c2a4a;border-color:#60a5fa;color:#60a5fa;}
+.act-type-icon{font-size:18px;}
+.sent-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;}
+.sent-btn{border-radius:9px;padding:11px 8px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
+.sent-btn:active{transform:scale(.96);}
+.sent-btn.selected-pos{background:#eaf3de;border-color:#639922;color:#3B6D11;}
+.sent-btn.selected-neu{background:#faeeda;border-color:#BA7517;color:#854F0B;}
+.sent-btn.selected-neg{background:#fcebeb;border-color:#E24B4A;color:#A32D2D;}
+body.dark .sent-btn.selected-pos{background:#0d2820;border-color:#4ecba6;color:#4ecba6;}
+body.dark .sent-btn.selected-neu{background:#2a2210;border-color:#d4b24a;color:#d4b24a;}
+body.dark .sent-btn.selected-neg{background:#2d1a1a;border-color:#e07575;color:#e07575;}
+.autofill-field{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.notes-toggle-row{font-size:13px;color:var(--accent2);cursor:pointer;display:flex;align-items:center;gap:6px;margin:4px 0 0;font-weight:600;}
+body.dark .notes-toggle-row{color:#60a5fa;}
+.divider-line{border:none;border-top:1px solid var(--border);margin:4px 0 14px;}
+
 /* ── ANIMATIONS ─────────────────────────────────────────── */
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -137,7 +160,7 @@ body.viewer-mode #cfg-confirm-pass{pointer-events:auto;opacity:1;}
 .sidebar-user .user-name{font-size:12px;font-weight:600;color:#fff;}
 .sidebar-user .user-role{font-size:10px;color:#8395a7;}
 nav{flex:1;padding:12px 0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:11px 20px;color:#8395a7;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;border-left:3px solid transparent;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:14px 20px;color:#8395a7;cursor:pointer;transition:all .15s;font-size:14px;font-weight:500;border-left:3px solid transparent;}
 .nav-item:hover{background:rgba(255,255,255,.05);color:#fff;}
 .nav-item.active{background:rgba(233,69,96,.1);color:var(--accent);border-left-color:var(--accent);}
 .nav-item .icon{width:18px;text-align:center;font-size:15px;}
@@ -170,11 +193,11 @@ body.dark .login-brand-name{color:#E2E8F0;}
 /* MAIN */
 .main{margin-left:230px;flex:1;min-height:100vh;}
 .topbar{background:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;gap:10px;}
-.topbar-title{font-size:17px;font-weight:700;color:var(--nav);white-space:nowrap;}
+.topbar-title{font-size:17px;font-weight:700;color:var(--text);white-space:nowrap;}
 .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
 .content{padding:24px;}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--nav);border-radius:2px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;}
 
 /* KPI CARDS */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
@@ -767,30 +790,83 @@ body.dark .mgr-summary-card{background:#13132a;}
 <!-- ACTIVITY MODAL -->
 <div class="modal-overlay" id="act-modal">
   <div class="modal">
-    <h3>Log Activity</h3>
+    <h3 id="act-modal-title">Log Activity</h3>
     <input type="hidden" id="act-edit-id"/>
+    <input type="hidden" id="af-type" value="Call"/>
+    <input type="hidden" id="af-sentiment" value=""/>
+    <input type="hidden" id="af-manager" value=""/>
+    <input type="hidden" id="af-duration" value=""/>
+
     <div class="form-grid">
-      <div class="form-group"><label>Company / Lead <span class="required-star">*</span></label><input type="text" id="af-company" placeholder="e.g. Hug a Mug"/></div>
-      <div class="form-group"><label>Activity Type <span class="required-star">*</span></label>
-        <select id="af-type"><option>Call</option><option>Email</option><option>Meeting</option><option>WhatsApp</option><option>Demo</option><option>Site Visit</option><option>Proposal</option><option>Other</option></select>
+      <!-- Company -->
+      <div class="form-group full">
+        <label>Company / Lead <span class="required-star">*</span></label>
+        <input type="text" id="af-company" list="af-company-list" placeholder="Type to search or enter a company name..."/>
+        <datalist id="af-company-list"></datalist>
       </div>
-      <div class="form-group"><label>Manager <span class="required-star">*</span></label><select id="af-manager"><option value="">Select manager...</option></select></div>
-      <div class="form-group"><label>Date <span class="required-star">*</span></label><input type="date" id="af-date"/></div>
-      <div class="form-group"><label>Duration (mins)</label><input type="number" id="af-duration" placeholder="e.g. 30"/></div>
+
+      <!-- Activity Type -->
+      <div class="form-group full">
+        <label>Activity Type <span class="required-star">*</span></label>
+        <div class="act-type-grid">
+          <button type="button" class="act-type-btn selected" data-type="Call" onclick="Activity.setType(this)"><span class="act-type-icon">📞</span>Call</button>
+          <button type="button" class="act-type-btn" data-type="WhatsApp" onclick="Activity.setType(this)"><span class="act-type-icon">💬</span>WhatsApp</button>
+          <button type="button" class="act-type-btn" data-type="Meeting" onclick="Activity.setType(this)"><span class="act-type-icon">🤝</span>Meeting</button>
+          <button type="button" class="act-type-btn" data-type="Email" onclick="Activity.setType(this)"><span class="act-type-icon">✉️</span>Email</button>
+          <button type="button" class="act-type-btn" data-type="Site Visit" onclick="Activity.setType(this)"><span class="act-type-icon">📍</span>Visit</button>
+          <button type="button" class="act-type-btn" data-type="Other" onclick="Activity.setType(this)"><span class="act-type-icon">•••</span>Other</button>
+        </div>
+      </div>
+
+      <!-- Manager (auto) + Date -->
       <div class="form-group">
-        <label>Sentiment <span class="required-star">*</span></label>
-        <select id="af-sentiment">
-          <option value="">Select...</option>
-          <option value="Positive">😊 Positive</option>
-          <option value="Neutral">😐 Neutral</option>
-          <option value="Negative">😞 Negative</option>
-        </select>
+        <label>Manager</label>
+        <div class="autofill-field" id="af-manager-display">🔒 Loading...</div>
       </div>
-      <div class="form-group full"><label>Outcome <span class="required-star">*</span></label><input type="text" id="af-outcome" placeholder="What happened during this interaction?"/></div>
-      <div class="form-group full"><label>Next Action <span class="required-star">*</span></label><input type="text" id="af-next-step" placeholder="What is the exact next step to move this forward?"/></div>
-      <div class="form-group full"><label>Next Action Deadline</label><input type="date" id="af-followup"/></div>
-      <div class="form-group full"><label>Additional Notes</label><textarea id="af-notes" rows="3" placeholder="Any extra context, blockers, or observations..."></textarea></div>
+      <div class="form-group">
+        <label>Date <span class="required-star">*</span></label>
+        <input type="date" id="af-date"/>
+      </div>
+
+      <hr class="divider-line" style="grid-column:1/-1"/>
+
+      <!-- Sentiment -->
+      <div class="form-group full">
+        <label>How did it go? <span class="required-star">*</span></label>
+        <div class="sent-grid">
+          <button type="button" class="sent-btn" data-val="Positive" onclick="Activity.setSentiment(this)">🟢 Positive</button>
+          <button type="button" class="sent-btn" data-val="Neutral"  onclick="Activity.setSentiment(this)">🟡 Neutral</button>
+          <button type="button" class="sent-btn" data-val="Negative" onclick="Activity.setSentiment(this)">🔴 Negative</button>
+        </div>
+      </div>
+
+      <!-- Outcome -->
+      <div class="form-group full">
+        <label>What happened? <span class="required-star">*</span></label>
+        <input type="text" id="af-outcome" placeholder="Summarise what happened in this interaction..."/>
+      </div>
+
+      <!-- Next step + Deadline -->
+      <div class="form-group">
+        <label>Next Step <span class="required-star">*</span></label>
+        <input type="text" id="af-next-step" placeholder="Exact next action to move forward..."/>
+      </div>
+      <div class="form-group">
+        <label>Deadline</label>
+        <input type="date" id="af-followup"/>
+      </div>
+
+      <!-- Notes (optional collapsible) -->
+      <div class="form-group full">
+        <div class="notes-toggle-row" onclick="Activity.toggleNotes()">
+          <span id="af-notes-arrow">▸</span> Add notes (optional)
+        </div>
+        <div id="af-notes-box" style="display:none;margin-top:8px">
+          <textarea id="af-notes" rows="3" placeholder="Any extra context, blockers, or observations..."></textarea>
+        </div>
+      </div>
     </div>
+
     <div class="modal-actions">
       <button class="btn btn-sec" onclick="Activity.closeModal()">Cancel</button>
       <button class="btn btn-add" onclick="Activity.save()">Save Activity</button>
@@ -1407,28 +1483,73 @@ const Activity = {
     this.populateMgrFilter();
   },
 
+  setType(btn){
+    document.querySelectorAll('.act-type-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    document.getElementById('af-type').value=btn.dataset.type;
+  },
+  setSentiment(btn){
+    document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
+    const map={Positive:'selected-pos',Neutral:'selected-neu',Negative:'selected-neg'};
+    btn.classList.add(map[btn.dataset.val]);
+    document.getElementById('af-sentiment').value=btn.dataset.val;
+  },
+  toggleNotes(){
+    const box=document.getElementById('af-notes-box');
+    const arrow=document.getElementById('af-notes-arrow');
+    const open=box.style.display==='none';
+    box.style.display=open?'block':'none';
+    arrow.textContent=open?'▾':'▸';
+  },
   openModal(id){
     document.getElementById('act-edit-id').value=id||'';
+    document.getElementById('act-modal-title').textContent=id?'Edit Activity':'Log Activity';
     const today=new Date().toISOString().split('T')[0];
-    populateManagerDropdown('af-manager');
+
+    // Populate company datalist from leads
+    const dl=document.getElementById('af-company-list');
+    dl.innerHTML=DB.leads.map(l=>`<option value="${l.company_name}">`).join('');
+
+    // Auto-fill manager
+    const displayName=currentUserEmail.split('@')[0];
+    const formatted=displayName.charAt(0).toUpperCase()+displayName.slice(1);
+    document.getElementById('af-manager-display').textContent='🔒 '+formatted;
+    document.getElementById('af-manager').value=formatted;
+
+    // Reset notes box
+    document.getElementById('af-notes-box').style.display='none';
+    document.getElementById('af-notes-arrow').textContent='▸';
+
     if(id){
       const a=DB.activities.find(x=>x.id===id);
       if(!a) return;
       document.getElementById('af-company').value   =a.company_name||'';
-      document.getElementById('af-type').value      =a.activity_type||'Call';
-      document.getElementById('af-manager').value   =a.manager||'';
       document.getElementById('af-date').value      =a.activity_date||today;
       document.getElementById('af-outcome').value   =a.outcome||'';
       document.getElementById('af-next-step').value =a.next_step||'';
       document.getElementById('af-followup').value  =a.followup_date||'';
-      document.getElementById('af-duration').value  =a.duration_mins||'';
-      document.getElementById('af-sentiment').value =a.sentiment||'';
       document.getElementById('af-notes').value     =a.notes||'';
+      if(a.notes){ document.getElementById('af-notes-box').style.display='block'; document.getElementById('af-notes-arrow').textContent='▾'; }
+      // Restore type button
+      document.querySelectorAll('.act-type-btn').forEach(b=>{b.classList.toggle('selected',b.dataset.type===(a.activity_type||'Call'));});
+      document.getElementById('af-type').value=a.activity_type||'Call';
+      // Restore sentiment button
+      document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
+      if(a.sentiment){
+        const map={Positive:'selected-pos',Neutral:'selected-neu',Negative:'selected-neg'};
+        const btn=document.querySelector(`.sent-btn[data-val="${a.sentiment}"]`);
+        if(btn) btn.classList.add(map[a.sentiment]);
+      }
+      document.getElementById('af-sentiment').value=a.sentiment||'';
+      // Restore manager if different
+      if(a.manager){ document.getElementById('af-manager').value=a.manager; document.getElementById('af-manager-display').textContent='🔒 '+a.manager; }
     } else {
-      ['af-company','af-outcome','af-next-step','af-followup','af-duration','af-notes'].forEach(id=>document.getElementById(id).value='');
+      ['af-company','af-outcome','af-next-step','af-followup','af-notes'].forEach(i=>document.getElementById(i).value='');
       document.getElementById('af-date').value=today;
       document.getElementById('af-type').value='Call';
       document.getElementById('af-sentiment').value='';
+      document.querySelectorAll('.act-type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type==='Call'));
+      document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
     }
     document.getElementById('act-modal').classList.add('open');
   },
