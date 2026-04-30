@@ -636,13 +636,6 @@ body.dark .mgr-summary-card{background:#13132a;}
               <div class="config-field"><label>Confirm Password</label><input type="password" id="cfg-confirm-pass" placeholder="Repeat new password"/></div>
               <button class="btn btn-add btn-sm" onclick="Auth.changePassword()">Update Password</button>
             </div>
-            <div class="settings-card" style="grid-column:1/-1">
-              <h4>📖 Quick Setup Guide</h4>
-              <p><strong>Morning email reminders</strong> are already set up via Supabase Edge Function (meeting-reminders) — fires at 8:30 AM IST daily for any meetings scheduled that day.</p>
-              <p style="margin-top:8px"><strong>Slack EOD:</strong> Add webhook URL above → click "EOD to Slack" on Dashboard each evening.</p>
-              <p style="margin-top:8px"><strong>Add team members:</strong> Go to Team tab → add name + email → they appear in the Manager dropdown when adding leads.</p>
-              <p style="margin-top:8px"><strong>Migration:</strong> Run <code>pg_dump</code> on Supabase → restore to any PostgreSQL server → update URL above.</p>
-            </div>
           </div>
         </div>
       </div>
