@@ -316,23 +316,73 @@ body.dark .mgr-summary-card{background:#13132a;}
   .sidebar.mobile-open{transform:translateX(0);}
   .main{margin-left:0;}
   .hamburger{display:flex;}
-  .kpi-grid{grid-template-columns:1fr 1fr;}
   .settings-grid{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
   .form-grid .full{grid-column:1;}
-  .topbar-actions .search-box{width:140px;}
   .add-member-form{grid-template-columns:1fr;gap:8px;}
   .table-card{overflow-x:auto;}
-  .content{padding:16px;}
-  .topbar{padding:12px 16px;}
+  .content{padding:12px;}
   .meeting-fields-grid{grid-template-columns:1fr 1fr !important;}
+
+  /* Topbar — stack title + actions vertically */
+  .topbar{flex-direction:column;align-items:flex-start;gap:10px;padding:12px 14px;}
+  .topbar-actions{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
+  .topbar-actions .search-box{flex:1;min-width:120px;}
+  .topbar-actions .filter-sel{flex:1;min-width:100px;}
+  .topbar-actions .btn-add{width:100%;margin-top:2px;padding:10px;}
+  .topbar-actions .btn-slack{font-size:11px;padding:7px 10px;}
+
+  /* KPI grid — 2 cols */
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
+  .kpi-value{font-size:24px;}
+
+  /* Modals — slide up full screen on mobile */
+  .modal-overlay{align-items:flex-end;padding:0;}
+  .modal{width:100%;max-width:100%;border-radius:18px 18px 0 0;padding:22px 18px;max-height:90vh;}
+  #lead-detail-modal .modal{border-radius:18px 18px 0 0;}
+
+  /* Tables — horizontal scroll with sticky first col */
+  table{min-width:600px;}
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* Bigger touch targets */
+  .btn{min-height:38px;padding:9px 14px;}
+  .btn-sm{min-height:34px;}
+  .nav-item{padding:13px 20px;font-size:14px;}
+  .whatsapp-btn{padding:7px 10px;font-size:12px;}
+
+  /* Pipeline */
+  .pipeline-card{padding:14px;}
+
+  /* Team card */
+  .team-card{padding:14px;}
 }
+
 @media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+  .kpi-card{padding:14px;}
+  .kpi-value{font-size:22px;}
+  .kpi-label{font-size:10px;}
+  .login-card{padding:28px 20px;}
   .meeting-fields-grid{grid-template-columns:1fr !important;}
-}
-@media(max-width:480px){
-  .kpi-grid{grid-template-columns:1fr;}
-  .login-card{padding:32px 24px;}
+
+  /* Hide less critical table columns on very small screens */
+  table th:nth-child(5),table td:nth-child(5),
+  table th:nth-child(8),table td:nth-child(8),
+  table th:nth-child(9),table td:nth-child(9){display:none;}
+
+  /* Full-width action buttons */
+  .topbar-actions .btn-export-csv,
+  #btn-export-csv{display:none;}
+
+  /* Modal inner padding tighter */
+  .modal{padding:18px 14px;}
+  .modal h3{font-size:15px;}
+  .form-group label{font-size:11px;}
+
+  /* Bottom nav feel — bigger sidebar items */
+  .sidebar{width:100%;}
+  .sidebar.mobile-open{transform:translateX(0);}
 }
 </style>
 </head>
