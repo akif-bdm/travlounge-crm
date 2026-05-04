@@ -937,12 +937,14 @@ function populateManagerDropdown(selId){
   const sel = document.getElementById(selId);
   const cur = sel.value;
   sel.innerHTML = '<option value="">Select manager...</option>';
-  DB.managers.forEach(m => {
-    const o = document.createElement('option');
-    o.value = m.name; o.textContent = m.name;
-    if(m.name===cur) o.selected=true;
-    sel.appendChild(o);
-  });
+  DB.managers
+    .filter(m => m.role !== 'viewer')
+    .forEach(m => {
+      const o = document.createElement('option');
+      o.value = m.name; o.textContent = m.name;
+      if(m.name===cur) o.selected=true;
+      sel.appendChild(o);
+    });
 }
 
 // ── DASHBOARD ─────────────────────────────────────────────────────────────────
