@@ -938,7 +938,7 @@ function populateManagerDropdown(selId){
   const cur = sel.value;
   sel.innerHTML = '<option value="">Select manager...</option>';
   DB.managers
-    .filter(m => m.role !== 'viewer')
+    .filter(m => (m.role||'').toLowerCase() !== 'viewer')
     .forEach(m => {
       const o = document.createElement('option');
       o.value = m.name; o.textContent = m.name;
