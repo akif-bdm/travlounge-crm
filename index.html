@@ -8,19 +8,18 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --nav:#1A1A2E;--nav2:#16213E;--accent:#E94560;--accent2:#0F3460;
-  --bg:#F4F6F9;--white:#fff;--text:#2D3436;--muted:#636e72;
-  --border:#DFE6E9;--success:#00B894;--warning:#FDCB6E;--danger:#E17055;
-  --radius:10px;--shadow:0 2px 12px rgba(0,0,0,.08);
-  --input-bg:#fff;--card:#fff;--table-head:#F8F9FA;--hover:#FFF9F9;
+  --nav:#172554;--nav2:#1E3A8A;--accent:#2563EB;--accent2:#1D4ED8;
+  --bg:#F8FAFF;--white:#fff;--text:#1E293B;--muted:#64748B;
+  --border:#E2E8F0;--success:#059669;--warning:#D97706;--danger:#DC2626;
+  --radius:12px;--shadow:0 1px 8px rgba(15,23,42,.08);
+  --input-bg:#fff;--card:#fff;--table-head:#F1F5F9;--hover:#EFF6FF;
   --modal-overlay:rgba(0,0,0,.45);
 }
 body.dark{
-  --bg:#0D0D1A;--white:#161625;--text:#E2E8F0;--muted:#94A3B8;
+  --bg:#0F172A;--white:#1E293B;--text:#E2E8F0;--muted:#94A3B8;
   --border:rgba(255,255,255,.09);--shadow:0 2px 16px rgba(0,0,0,.4);
-  --input-bg:#1E1E30;--card:#1E1E30;--table-head:#131320;--hover:rgba(233,69,96,.06);
+  --input-bg:#1E293B;--card:#1E293B;--table-head:#0F172A;--hover:rgba(37,99,235,.06);
   --modal-overlay:rgba(0,0,0,.7);
-  --accent2:#60a5fa;
 }
 body{font-family:Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .25s,color .25s;}
 
@@ -49,72 +48,15 @@ body.dark .filter-sel{background:var(--input-bg);color:var(--text);}
 body.dark .search-box{background:var(--input-bg);color:var(--text);}
 body.dark .btn-sec{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border);}
 body.dark .btn-logout{background:rgba(255,255,255,.05);}
-body.dark table thead th{background:#13132a;color:#94A3B8;}
-body.dark tbody tr:hover{background:rgba(233,69,96,.05);}
+body.dark .btn-edit{background:rgba(37,99,235,.15);color:#93C5FD;}
+body.dark table thead th{background:#0F172A;color:#94A3B8;}
+body.dark tbody tr:hover{background:rgba(37,99,235,.06);}
 body.dark tbody tr{border-color:rgba(255,255,255,.06);}
 body.dark .config-field input{background:var(--input-bg);color:var(--text);border-color:var(--border);}
 body.dark .dark-toggle{background:rgba(255,255,255,.08);color:#E2E8F0;}
 body.dark .dark-toggle:hover{background:rgba(255,255,255,.13);}
-body.dark .notes-preview{color:#60a5fa!important;}
-body.dark td strong{color:#E2E8F0;}
-body.dark td a{color:#60a5fa!important;}
-body.dark .mgr-summary-card h5{color:#E2E8F0;}
-body.dark .section-title{color:#CBD5E1;}
-body.dark label{color:#CBD5E1;}
-body.dark .form-group label{color:#CBD5E1;}
-body.dark .config-field label{color:#CBD5E1;}
-body.dark .team-member .member-name{color:#E2E8F0;}
-body.dark .char-count{color:#94A3B8;}
-body.dark code{background:#1E1E30;color:#60a5fa;padding:2px 6px;border-radius:4px;}
-
-/* ── ACTIVITY LOG NEW DESIGN ────────────────────────────── */
-.act-type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px;}
-@media(max-width:480px){.act-type-grid{grid-template-columns:repeat(3,1fr);}}
-.act-type-btn{background:var(--bg);border:1.5px solid var(--border);border-radius:9px;padding:10px 4px;font-size:11px;font-weight:600;color:var(--muted);text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .15s;}
-.act-type-btn:active{transform:scale(.94);}
-.act-type-btn.selected{background:#e8f1fd;border-color:#378ADD;color:#185FA5;}
-body.dark .act-type-btn{background:#1E1E30;border-color:rgba(255,255,255,.12);color:var(--muted);}
-body.dark .act-type-btn.selected{background:#0c2a4a;border-color:#60a5fa;color:#60a5fa;}
-.act-type-icon{font-size:18px;}
-.sent-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;}
-.sent-btn{border-radius:9px;padding:11px 8px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;}
-.sent-btn:active{transform:scale(.96);}
-.sent-btn.selected-pos{background:#eaf3de;border-color:#639922;color:#3B6D11;}
-.sent-btn.selected-neu{background:#faeeda;border-color:#BA7517;color:#854F0B;}
-.sent-btn.selected-neg{background:#fcebeb;border-color:#E24B4A;color:#A32D2D;}
-body.dark .sent-btn.selected-pos{background:#0d2820;border-color:#4ecba6;color:#4ecba6;}
-body.dark .sent-btn.selected-neu{background:#2a2210;border-color:#d4b24a;color:#d4b24a;}
-body.dark .sent-btn.selected-neg{background:#2d1a1a;border-color:#e07575;color:#e07575;}
-.autofill-field{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;}
-.notes-toggle-row{font-size:13px;color:var(--accent2);cursor:pointer;display:flex;align-items:center;gap:6px;margin:4px 0 0;font-weight:600;}
-body.dark .notes-toggle-row{color:#60a5fa;}
-.divider-line{border:none;border-top:1px solid var(--border);margin:4px 0 14px;}
-
-/* ── ANIMATIONS ─────────────────────────────────────────── */
-@keyframes fadeSlideIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes scaleUp{from{opacity:0;transform:scale(.96) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
-
-.view{display:none;opacity:0;}
-.view.active{display:block;animation:fadeSlideIn .22s ease forwards;}
-
-.modal-overlay{transition:opacity .2s ease;}
-.modal-overlay.open .modal,.modal-overlay[style*="flex"] .modal{animation:scaleUp .22s ease forwards;}
-.modal-overlay{display:none;opacity:0;}
-.modal-overlay.open{display:flex;animation:fadeIn .18s ease forwards;}
-
-/* Button press feel */
-.btn{transition:all .15s ease;}
-.btn:active{transform:scale(.96);opacity:.85;}
-.btn-primary{transition:all .15s ease;}
-.btn-primary:active{transform:scale(.98);}
-.btn-logout{transition:all .15s ease;}
-.nav-item{transition:background .15s ease,color .15s ease,border-color .15s ease;}
-.kpi-card{transition:transform .15s ease,box-shadow .15s ease;}
-.kpi-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.12);}
-.team-member{transition:background .15s ease;}
-.whatsapp-btn{transition:all .15s ease;}
-.whatsapp-btn:active{transform:scale(.94);}
+body.dark .mtg-today-row{background:rgba(217,119,6,.08)!important;}
+body.dark .mtg-overdue-row{background:rgba(220,38,38,.05)!important;}
 
 /* VIEWER MODE — hide all write actions at CSS level (belt + suspenders on top of RLS) */
 body.viewer-mode .btn-edit,
@@ -128,8 +70,6 @@ body.viewer-mode input,
 body.viewer-mode select,
 body.viewer-mode textarea{pointer-events:none;opacity:.7;}
 body.viewer-mode .btn-primary{pointer-events:none;opacity:.5;}
-body.viewer-mode #cfg-new-pass,
-body.viewer-mode #cfg-confirm-pass{pointer-events:auto;opacity:1;}
 
 /* LOGIN */
 #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--nav);}
@@ -151,23 +91,24 @@ body.viewer-mode #cfg-confirm-pass{pointer-events:auto;opacity:1;}
 .layout{display:flex;min-height:100vh;}
 
 /* SIDEBAR */
-.sidebar{width:230px;background:var(--nav);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s;}
-.sidebar-brand{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;}
+.sidebar{width:240px;background:var(--nav);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s;box-shadow:4px 0 20px rgba(0,0,0,.15);}
+.sidebar-brand{padding:20px 22px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;}
 .sidebar-brand h2{font-size:16px;font-weight:800;color:#fff;}
 .sidebar-brand h2 span{color:var(--accent);}
 .sidebar-brand p{font-size:10px;color:#8395a7;margin-top:2px;}
-.sidebar-user{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07);}
-.sidebar-user .user-name{font-size:12px;font-weight:600;color:#fff;}
-.sidebar-user .user-role{font-size:10px;color:#8395a7;}
-nav{flex:1;padding:12px 0;}
-.nav-item{display:flex;align-items:center;gap:10px;padding:14px 20px;color:#8395a7;cursor:pointer;transition:all .15s;font-size:14px;font-weight:500;border-left:3px solid transparent;}
-.nav-item:hover{background:rgba(255,255,255,.05);color:#fff;}
-.nav-item.active{background:rgba(233,69,96,.1);color:var(--accent);border-left-color:var(--accent);}
-.nav-item .icon{width:18px;text-align:center;font-size:15px;}
-.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:8px;}
-.btn-logout{width:100%;padding:9px;background:rgba(255,255,255,.07);color:#8395a7;border:none;border-radius:7px;font-size:12px;cursor:pointer;}
-.btn-logout:hover{background:rgba(233,69,96,.15);color:var(--accent);}
-.dark-toggle{width:100%;padding:9px;background:rgba(255,255,255,.05);color:#8395a7;border:none;border-radius:7px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+.sidebar-user{padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.07);}
+.sidebar-user .user-name{font-size:12px;font-weight:700;color:#fff;}
+.sidebar-user .user-role{font-size:10px;color:#8395a7;margin-top:2px;}
+nav{flex:1;padding:14px 0;}
+.nav-section-label{font-size:9px;font-weight:700;color:rgba(255,255,255,.25);text-transform:uppercase;letter-spacing:1.5px;padding:10px 22px 4px;}
+.nav-item{display:flex;align-items:center;gap:12px;padding:13px 22px;color:#94A3B8;cursor:pointer;transition:all .15s;font-size:13px;font-weight:500;border-left:3px solid transparent;margin:1px 0;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:rgba(37,99,235,.18);color:#60A5FA;border-left-color:#3B82F6;}
+.nav-item .icon{width:20px;text-align:center;font-size:16px;opacity:.85;}
+.sidebar-footer{padding:14px 22px;border-top:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;gap:8px;}
+.btn-logout{width:100%;padding:10px;background:rgba(255,255,255,.07);color:#94A3B8;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
+.btn-logout:hover{background:rgba(220,38,38,.15);color:#F87171;}
+.dark-toggle{width:100%;padding:10px;background:rgba(255,255,255,.05);color:#94A3B8;border:none;border-radius:8px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:500;}
 .dark-toggle:hover{background:rgba(255,255,255,.1);color:#fff;}
 
 /* LOGO */
@@ -191,13 +132,19 @@ body.dark .login-brand-name{color:#E2E8F0;}
 .sidebar-overlay.open{display:block;}
 
 /* MAIN */
-.main{margin-left:230px;flex:1;min-height:100vh;}
-.topbar{background:var(--white);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;gap:10px;}
-.topbar-title{font-size:17px;font-weight:700;color:var(--text);white-space:nowrap;}
+.main{margin-left:240px;flex:1;min-height:100vh;}
+.topbar{background:var(--white);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;gap:10px;}
+.topbar-crumb{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:2px;}
+.topbar-title{font-size:20px;font-weight:800;color:var(--nav);white-space:nowrap;line-height:1.1;}
 .topbar-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
-.content{padding:24px;}
+.content{padding:28px;}
+
+/* SECTION HEADER — matches AP portal "General Information" card header */
+.content-section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.content-section-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff;flex-shrink:0;}
+.content-section-label{font-size:14px;font-weight:700;color:var(--nav);}
 .hamburger{display:none;background:none;border:none;cursor:pointer;padding:4px;flex-direction:column;gap:5px;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--nav);border-radius:2px;}
 
 /* KPI CARDS */
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
@@ -208,7 +155,7 @@ body.dark .login-brand-name{color:#E2E8F0;}
 .kpi-card.yellow{border-color:var(--warning);}
 .kpi-card.purple{border-color:#7D3C98;}
 .kpi-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
-.kpi-value{font-size:30px;font-weight:800;color:var(--text);margin:6px 0 2px;}
+.kpi-value{font-size:30px;font-weight:800;color:var(--nav);margin:6px 0 2px;}
 .kpi-sub{font-size:11px;color:var(--muted);}
 
 /* PIPELINE */
@@ -253,16 +200,23 @@ tbody td{padding:11px 14px;font-size:13px;vertical-align:middle;}
 .age-stale{color:var(--danger);font-weight:600;}
 
 /* BUTTONS */
-.btn{padding:9px 16px;border-radius:7px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+.btn{padding:9px 18px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
 .btn-add{background:var(--accent);color:#fff;}
-.btn-add:hover{opacity:.88;}
+.btn-add:hover{background:#1D4ED8;}
 .btn-slack{background:#4A154B;color:#fff;}
 .btn-slack:hover{opacity:.88;}
-.btn-sm{padding:5px 10px;font-size:11px;}
-.btn-edit{background:#EAF4FB;color:var(--accent2);}
-.btn-del{background:#FDEDEC;color:var(--danger);}
+.btn-sm{padding:5px 11px;font-size:11px;}
+.btn-edit{background:#EFF6FF;color:#1D4ED8;}
+.btn-del{background:#FEF2F2;color:var(--danger);}
 .btn-sec{background:var(--bg);color:var(--text);border:1.5px solid var(--border);}
 .btn-wa{background:#25D366;color:#fff;}
+
+/* MEETINGS */
+.mtg-today-row{background:#FFFBEB !important;}
+.mtg-overdue-row{background:#FFF1F2 !important;}
+.badge-today{background:#FEF3C7;color:#92400E;}
+.badge-upcoming{background:#DBEAFE;color:#1E40AF;}
+.badge-past-mtg{background:#F1F5F9;color:#64748B;}
 
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:var(--modal-overlay);z-index:999;align-items:center;justify-content:center;padding:16px;}
@@ -339,73 +293,23 @@ body.dark .mgr-summary-card{background:#13132a;}
   .sidebar.mobile-open{transform:translateX(0);}
   .main{margin-left:0;}
   .hamburger{display:flex;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
   .settings-grid{grid-template-columns:1fr;}
   .form-grid{grid-template-columns:1fr;}
   .form-grid .full{grid-column:1;}
+  .topbar-actions .search-box{width:140px;}
   .add-member-form{grid-template-columns:1fr;gap:8px;}
   .table-card{overflow-x:auto;}
-  .content{padding:12px;}
+  .content{padding:16px;}
+  .topbar{padding:12px 16px;}
   .meeting-fields-grid{grid-template-columns:1fr 1fr !important;}
-
-  /* Topbar — stack title + actions vertically */
-  .topbar{flex-direction:column;align-items:flex-start;gap:10px;padding:12px 14px;}
-  .topbar-actions{width:100%;display:flex;flex-wrap:wrap;gap:6px;}
-  .topbar-actions .search-box{flex:1;min-width:120px;}
-  .topbar-actions .filter-sel{flex:1;min-width:100px;}
-  .topbar-actions .btn-add{width:100%;margin-top:2px;padding:10px;}
-  .topbar-actions .btn-slack{font-size:11px;padding:7px 10px;}
-
-  /* KPI grid — 2 cols */
-  .kpi-grid{grid-template-columns:1fr 1fr;gap:10px;}
-  .kpi-value{font-size:24px;}
-
-  /* Modals — slide up full screen on mobile */
-  .modal-overlay{align-items:flex-end;padding:0;}
-  .modal{width:100%;max-width:100%;border-radius:18px 18px 0 0;padding:22px 18px;max-height:90vh;}
-  #lead-detail-modal .modal{border-radius:18px 18px 0 0;}
-
-  /* Tables — horizontal scroll with sticky first col */
-  table{min-width:600px;}
-  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-
-  /* Bigger touch targets */
-  .btn{min-height:38px;padding:9px 14px;}
-  .btn-sm{min-height:34px;}
-  .nav-item{padding:13px 20px;font-size:14px;}
-  .whatsapp-btn{padding:7px 10px;font-size:12px;}
-
-  /* Pipeline */
-  .pipeline-card{padding:14px;}
-
-  /* Team card */
-  .team-card{padding:14px;}
 }
-
 @media(max-width:480px){
-  .kpi-grid{grid-template-columns:1fr 1fr;}
-  .kpi-card{padding:14px;}
-  .kpi-value{font-size:22px;}
-  .kpi-label{font-size:10px;}
-  .login-card{padding:28px 20px;}
   .meeting-fields-grid{grid-template-columns:1fr !important;}
-
-  /* Hide less critical table columns on very small screens */
-  table th:nth-child(5),table td:nth-child(5),
-  table th:nth-child(8),table td:nth-child(8),
-  table th:nth-child(9),table td:nth-child(9){display:none;}
-
-  /* Full-width action buttons */
-  .topbar-actions .btn-export-csv,
-  #btn-export-csv{display:none;}
-
-  /* Modal inner padding tighter */
-  .modal{padding:18px 14px;}
-  .modal h3{font-size:15px;}
-  .form-group label{font-size:11px;}
-
-  /* Bottom nav feel — bigger sidebar items */
-  .sidebar{width:100%;}
-  .sidebar.mobile-open{transform:translateX(0);}
+}
+@media(max-width:480px){
+  .kpi-grid{grid-template-columns:1fr;}
+  .login-card{padding:32px 24px;}
 }
 </style>
 </head>
@@ -427,11 +331,6 @@ body.dark .mgr-summary-card{background:#13132a;}
     </div>
     <button class="btn-primary" onclick="Auth.login()">Sign In</button>
     <div class="login-error" id="login-error"></div>
-    <div style="text-align:center;margin-top:14px">
-      <span style="font-size:12px;color:#8395a7">Forgot password? </span>
-      <a href="#" onclick="Auth.sendMagicLink(event)" style="font-size:12px;color:var(--accent2);text-decoration:none;font-weight:600">Send me a login link →</a>
-    </div>
-    <div id="magic-link-msg" style="display:none;margin-top:10px;padding:10px;background:#e8f5e9;border-radius:8px;font-size:12px;color:#2e7d32;text-align:center"></div>
   </div>
 </div>
 
@@ -450,11 +349,14 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="user-role" id="sidebar-user-email"></div>
       </div>
       <nav>
-        <div class="nav-item active" onclick="Router.go('dashboard')" id="nav-dashboard"><span class="icon">◈</span>Dashboard</div>
-        <div class="nav-item" onclick="Router.go('crm')" id="nav-crm"><span class="icon">◎</span>CRM Tracker</div>
-        <div class="nav-item" onclick="Router.go('activity')" id="nav-activity"><span class="icon">▤</span>Activity Log</div>
-        <div class="nav-item" onclick="Router.go('team')" id="nav-team"><span class="icon">◷</span>Team</div>
-        <div class="nav-item" onclick="Router.go('settings')" id="nav-settings"><span class="icon">◬</span>Settings</div>
+        <div class="nav-section-label">Main</div>
+        <div class="nav-item active" onclick="Router.go('dashboard')" id="nav-dashboard"><span class="icon">📊</span>Dashboard</div>
+        <div class="nav-item" onclick="Router.go('crm')" id="nav-crm"><span class="icon">🗂️</span>CRM Tracker</div>
+        <div class="nav-item" onclick="Router.go('meetings')" id="nav-meetings"><span class="icon">📅</span>Meetings</div>
+        <div class="nav-item" onclick="Router.go('activity')" id="nav-activity"><span class="icon">📋</span>Activity Log</div>
+        <div class="nav-section-label">Admin</div>
+        <div class="nav-item" onclick="Router.go('team')" id="nav-team"><span class="icon">👥</span>Team</div>
+        <div class="nav-item" onclick="Router.go('settings')" id="nav-settings"><span class="icon">⚙️</span>Settings</div>
       </nav>
       <div class="sidebar-footer">
         <button class="dark-toggle" id="dark-toggle-btn" onclick="DarkMode.toggle()">
@@ -471,7 +373,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="topbar">
           <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-            <div class="topbar-title">Dashboard</div>
+            <div><div class="topbar-crumb">CRM TRACKER</div><div class="topbar-title">Dashboard</div></div>
           </div>
           <div class="topbar-actions">
             <span id="dash-date" style="font-size:12px;color:var(--muted)"></span>
@@ -509,7 +411,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="topbar">
           <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-            <div class="topbar-title">CRM Tracker</div>
+            <div><div class="topbar-crumb">CRM TRACKER</div><div class="topbar-title">All Leads & Partners</div></div>
           </div>
           <div class="topbar-actions">
             <input class="search-box" id="crm-search" placeholder="🔍 Search..." oninput="CRM.filter()"/>
@@ -523,7 +425,6 @@ body.dark .mgr-summary-card{background:#13132a;}
               <option>Cafe</option><option>Restaurant</option><option>Gym</option><option>Pharmacy</option>
               <option>Coworking</option><option>Laundry</option><option>Automobile</option><option>Travel Agency</option>
             </select>
-            <button class="btn btn-slack" id="btn-export-csv" onclick="CRM.exportCSV()" style="display:none">⬇ Export CSV</button>
             <button class="btn btn-add" onclick="CRM.openModal()">+ Add Lead</button>
           </div>
         </div>
@@ -542,7 +443,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="topbar">
           <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-            <div class="topbar-title">Activity Log</div>
+            <div><div class="topbar-crumb">CRM TRACKER</div><div class="topbar-title">Activity Log</div></div>
           </div>
           <div class="topbar-actions">
             <input class="search-box" id="act-search" placeholder="🔍 Search..." oninput="Activity.filter()"/>
@@ -580,7 +481,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="topbar">
           <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-            <div class="topbar-title">Team Members</div>
+            <div><div class="topbar-crumb">ADMIN</div><div class="topbar-title">Team Members</div></div>
           </div>
         </div>
         <div class="content">
@@ -609,33 +510,82 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="topbar">
           <div style="display:flex;align-items:center;gap:12px;">
             <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
-            <div class="topbar-title">Settings</div>
+            <div><div class="topbar-crumb">ADMIN</div><div class="topbar-title">Settings</div></div>
           </div>
         </div>
         <div class="content">
           <div class="settings-grid">
-            <div class="settings-card" id="settings-notifications-card" style="display:none">
-              <h4>🔔 Notifications</h4>
-              <p>Configure where end-of-day summaries are sent.</p>
+            <div class="settings-card">
+              <h4>💬 Slack</h4>
+              <p>Paste your Slack Incoming Webhook URL for EOD reports.</p>
               <div class="config-field"><label>Webhook URL</label><input type="text" id="cfg-slack" placeholder="https://hooks.slack.com/services/..."/></div>
               <div class="config-field"><label>Channel</label><input type="text" id="cfg-slack-channel" placeholder="#crm-updates"/></div>
               <button class="btn btn-add btn-sm" onclick="Settings.save()">Save</button>
             </div>
-            <div class="settings-card" id="settings-connection-card" style="display:none">
-              <h4>🔗 Data Connection</h4>
-              <p>Advanced configuration. Only change these if instructed by your system admin.</p>
-              <div class="config-field"><label>Connection URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
-              <div class="config-field"><label>Access Key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
-              <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires an app reload.</p>
+            <div class="settings-card">
+              <h4>🗄️ Supabase</h4>
+              <p>Your database connection. To migrate: pg_dump → restore to new PostgreSQL → update URL below.</p>
+              <div class="config-field"><label>Project URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
+              <div class="config-field"><label>Anon Key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
+              <p style="font-size:11px;color:var(--warning);">⚠️ Changing these requires reload.</p>
               <button class="btn btn-add btn-sm" onclick="Settings.save()">Save & Reload</button>
             </div>
-            <div class="settings-card">
-              <h4>🔒 Change Password</h4>
-              <p>Set or update your account password.</p>
-              <div class="config-field"><label>New Password</label><input type="password" id="cfg-new-pass" placeholder="Minimum 6 characters"/></div>
-              <div class="config-field"><label>Confirm Password</label><input type="password" id="cfg-confirm-pass" placeholder="Repeat new password"/></div>
-              <button class="btn btn-add btn-sm" onclick="Auth.changePassword()">Update Password</button>
+            <div class="settings-card" style="grid-column:1/-1">
+              <h4>📖 Quick Setup Guide</h4>
+              <p><strong>Morning email reminders</strong> are already set up via Supabase Edge Function (meeting-reminders) — fires at 8:30 AM IST daily for any meetings scheduled that day.</p>
+              <p style="margin-top:8px"><strong>Slack EOD:</strong> Add webhook URL above → click "EOD to Slack" on Dashboard each evening.</p>
+              <p style="margin-top:8px"><strong>Add team members:</strong> Go to Team tab → add name + email → they appear in the Manager dropdown when adding leads.</p>
+              <p style="margin-top:8px"><strong>Migration:</strong> Run <code>pg_dump</code> on Supabase → restore to any PostgreSQL server → update URL above.</p>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEETINGS -->
+      <div class="view" id="view-meetings">
+        <div class="topbar">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <button class="hamburger" onclick="openSidebar()"><span></span><span></span><span></span></button>
+            <div><div class="topbar-crumb">CRM TRACKER</div><div class="topbar-title">Meetings</div></div>
+          </div>
+          <div class="topbar-actions">
+            <select class="filter-sel" id="mtg-mgr-filter" onchange="Meetings.filter()">
+              <option value="">All Managers</option>
+            </select>
+            <select class="filter-sel" id="mtg-period-filter" onchange="Meetings.filter()">
+              <option value="all">All Meetings</option>
+              <option value="today">Today</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="past">Past</option>
+            </select>
+          </div>
+        </div>
+        <div class="content">
+          <!-- KPIs -->
+          <div class="kpi-grid" style="margin-bottom:24px;">
+            <div class="kpi-card blue"><div class="kpi-label">Total Scheduled</div><div class="kpi-value" id="mtg-kpi-total">—</div><div class="kpi-sub">All meetings</div></div>
+            <div class="kpi-card yellow"><div class="kpi-label">Today</div><div class="kpi-value" id="mtg-kpi-today">—</div><div class="kpi-sub">Happening today</div></div>
+            <div class="kpi-card green"><div class="kpi-label">This Week</div><div class="kpi-value" id="mtg-kpi-week">—</div><div class="kpi-sub">Next 7 days</div></div>
+            <div class="kpi-card red"><div class="kpi-label">Past</div><div class="kpi-value" id="mtg-kpi-overdue">—</div><div class="kpi-sub">Already happened</div></div>
+          </div>
+          <!-- Today banner -->
+          <div id="mtg-today-banner" style="display:none;background:linear-gradient(135deg,#FEF3C7,#FDE68A);border:1.5px solid #F59E0B;border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+            <span style="font-size:24px;">📅</span>
+            <div>
+              <div style="font-weight:700;color:#92400E;font-size:14px;" id="mtg-banner-text">You have meetings today</div>
+              <div style="font-size:12px;color:#B45309;margin-top:2px;">Scroll down to see today's schedule</div>
+            </div>
+          </div>
+          <!-- Table -->
+          <div class="table-card">
+            <div class="table-header">
+              <div class="section-title" style="margin:0">📋 Scheduled Meetings</div>
+              <button class="btn btn-sec btn-sm" onclick="Router.go('crm')">+ Add via CRM</button>
+            </div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Date</th><th>Time</th><th>Company</th><th>Segment</th><th>Manager</th><th>Location</th><th>Stage</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="mtg-tbody"><tr class="empty-row"><td colspan="9">Loading meetings...</td></tr></tbody>
+            </table></div>
           </div>
         </div>
       </div>
@@ -769,97 +719,33 @@ body.dark .mgr-summary-card{background:#13132a;}
   </div>
 </div>
 
-<!-- LEAD DETAIL PANEL -->
-<div class="modal-overlay" id="lead-detail-modal" onclick="if(event.target===this)CRM.closeDetail()">
-  <div class="modal" style="width:680px;max-width:100%">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-      <h3 id="ld-title" style="margin:0"></h3>
-      <button class="btn btn-sec" onclick="CRM.closeDetail()" style="padding:6px 14px">✕ Close</button>
-    </div>
-    <div id="ld-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:13px"></div>
-  </div>
-</div>
-
 <!-- ACTIVITY MODAL -->
 <div class="modal-overlay" id="act-modal">
   <div class="modal">
-    <h3 id="act-modal-title">Log Activity</h3>
+    <h3>Log Activity</h3>
     <input type="hidden" id="act-edit-id"/>
-    <input type="hidden" id="af-type" value="Call"/>
-    <input type="hidden" id="af-sentiment" value=""/>
-    <input type="hidden" id="af-manager" value=""/>
-    <input type="hidden" id="af-duration" value=""/>
-
     <div class="form-grid">
-      <!-- Company -->
-      <div class="form-group full">
-        <label>Company / Lead <span class="required-star">*</span></label>
-        <input type="text" id="af-company" list="af-company-list" placeholder="Type to search or enter a company name..."/>
-        <datalist id="af-company-list"></datalist>
+      <div class="form-group"><label>Company / Lead <span class="required-star">*</span></label><input type="text" id="af-company" placeholder="e.g. Hug a Mug"/></div>
+      <div class="form-group"><label>Activity Type <span class="required-star">*</span></label>
+        <select id="af-type"><option>Call</option><option>Email</option><option>Meeting</option><option>WhatsApp</option><option>Demo</option><option>Site Visit</option><option>Proposal</option><option>Other</option></select>
       </div>
-
-      <!-- Activity Type -->
-      <div class="form-group full">
-        <label>Activity Type <span class="required-star">*</span></label>
-        <div class="act-type-grid">
-          <button type="button" class="act-type-btn selected" data-type="Call" onclick="Activity.setType(this)"><span class="act-type-icon">📞</span>Call</button>
-          <button type="button" class="act-type-btn" data-type="WhatsApp" onclick="Activity.setType(this)"><span class="act-type-icon">💬</span>WhatsApp</button>
-          <button type="button" class="act-type-btn" data-type="Meeting" onclick="Activity.setType(this)"><span class="act-type-icon">🤝</span>Meeting</button>
-          <button type="button" class="act-type-btn" data-type="Email" onclick="Activity.setType(this)"><span class="act-type-icon">✉️</span>Email</button>
-          <button type="button" class="act-type-btn" data-type="Site Visit" onclick="Activity.setType(this)"><span class="act-type-icon">📍</span>Visit</button>
-          <button type="button" class="act-type-btn" data-type="Other" onclick="Activity.setType(this)"><span class="act-type-icon">•••</span>Other</button>
-        </div>
-      </div>
-
-      <!-- Manager (auto) + Date -->
+      <div class="form-group"><label>Manager <span class="required-star">*</span></label><select id="af-manager"><option value="">Select manager...</option></select></div>
+      <div class="form-group"><label>Date <span class="required-star">*</span></label><input type="date" id="af-date"/></div>
+      <div class="form-group"><label>Duration (mins)</label><input type="number" id="af-duration" placeholder="e.g. 30"/></div>
       <div class="form-group">
-        <label>Manager</label>
-        <div class="autofill-field" id="af-manager-display">🔒 Loading...</div>
+        <label>Sentiment <span class="required-star">*</span></label>
+        <select id="af-sentiment">
+          <option value="">Select...</option>
+          <option value="Positive">😊 Positive</option>
+          <option value="Neutral">😐 Neutral</option>
+          <option value="Negative">😞 Negative</option>
+        </select>
       </div>
-      <div class="form-group">
-        <label>Date <span class="required-star">*</span></label>
-        <input type="date" id="af-date"/>
-      </div>
-
-      <hr class="divider-line" style="grid-column:1/-1"/>
-
-      <!-- Sentiment -->
-      <div class="form-group full">
-        <label>How did it go? <span class="required-star">*</span></label>
-        <div class="sent-grid">
-          <button type="button" class="sent-btn" data-val="Positive" onclick="Activity.setSentiment(this)">🟢 Positive</button>
-          <button type="button" class="sent-btn" data-val="Neutral"  onclick="Activity.setSentiment(this)">🟡 Neutral</button>
-          <button type="button" class="sent-btn" data-val="Negative" onclick="Activity.setSentiment(this)">🔴 Negative</button>
-        </div>
-      </div>
-
-      <!-- Outcome -->
-      <div class="form-group full">
-        <label>What happened? <span class="required-star">*</span></label>
-        <input type="text" id="af-outcome" placeholder="Summarise what happened in this interaction..."/>
-      </div>
-
-      <!-- Next step + Deadline -->
-      <div class="form-group">
-        <label>Next Step <span class="required-star">*</span></label>
-        <input type="text" id="af-next-step" placeholder="Exact next action to move forward..."/>
-      </div>
-      <div class="form-group">
-        <label>Deadline</label>
-        <input type="date" id="af-followup"/>
-      </div>
-
-      <!-- Notes (optional collapsible) -->
-      <div class="form-group full">
-        <div class="notes-toggle-row" onclick="Activity.toggleNotes()">
-          <span id="af-notes-arrow">▸</span> Add notes (optional)
-        </div>
-        <div id="af-notes-box" style="display:none;margin-top:8px">
-          <textarea id="af-notes" rows="3" placeholder="Any extra context, blockers, or observations..."></textarea>
-        </div>
-      </div>
+      <div class="form-group full"><label>Outcome <span class="required-star">*</span></label><input type="text" id="af-outcome" placeholder="What happened during this interaction?"/></div>
+      <div class="form-group full"><label>Next Action <span class="required-star">*</span></label><input type="text" id="af-next-step" placeholder="What is the exact next step to move this forward?"/></div>
+      <div class="form-group full"><label>Next Action Deadline</label><input type="date" id="af-followup"/></div>
+      <div class="form-group full"><label>Additional Notes</label><textarea id="af-notes" rows="3" placeholder="Any extra context, blockers, or observations..."></textarea></div>
     </div>
-
     <div class="modal-actions">
       <button class="btn btn-sec" onclick="Activity.closeModal()">Cancel</button>
       <button class="btn btn-add" onclick="Activity.save()">Save Activity</button>
@@ -925,32 +811,6 @@ const Auth = {
     document.getElementById('app').style.display='none';
     document.getElementById('login-screen').style.display='flex';
   },
-  async sendMagicLink(e){
-    e.preventDefault();
-    const email = document.getElementById('login-email').value.trim();
-    if(!email){ document.getElementById('login-error').textContent='Enter your email above first.'; return; }
-    const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser: false } });
-    const msgEl = document.getElementById('magic-link-msg');
-    if(error){
-      document.getElementById('login-error').textContent = error.message;
-    } else {
-      document.getElementById('login-error').textContent='';
-      msgEl.style.display='block';
-      msgEl.textContent=`✅ Login link sent to ${email}. Check your inbox and click the link to get in — no password needed.`;
-    }
-  },
-
-  async changePassword(){
-    const np = document.getElementById('cfg-new-pass').value.trim();
-    const cp = document.getElementById('cfg-confirm-pass').value.trim();
-    if(!np || np.length < 6){ Toast.show('Password must be at least 6 characters','error'); return; }
-    if(np !== cp){ Toast.show('Passwords do not match','error'); return; }
-    const { error } = await sb.auth.updateUser({ password: np });
-    if(error){ Toast.show('Error: '+error.message,'error'); return; }
-    document.getElementById('cfg-new-pass').value='';
-    document.getElementById('cfg-confirm-pass').value='';
-    Toast.show('Password updated successfully! Use it next time you log in.','success');
-  },
   async onLogin(){
     const { data:{ user } } = await sb.auth.getUser();
     currentUserEmail = user.email;
@@ -970,18 +830,13 @@ const Auth = {
     if(isViewer){
       document.body.classList.add('viewer-mode');
     }
-    // Admin-only UI elements
-    if(isAdmin){
-      document.getElementById('btn-export-csv').style.display='';
-      document.getElementById('settings-notifications-card').style.display='';
-      document.getElementById('settings-connection-card').style.display='';
-    }
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
     await Promise.all([DB.fetchLeads(), DB.fetchActivities(), DB.fetchManagers()]);
     Dashboard.load();
     CRM.render();
     Activity.render();
+    Meetings.render();
     Team.load();
     DB.subscribeRealtime();
   }
@@ -1012,7 +867,7 @@ const DB = {
 
   subscribeRealtime(){
     sb.channel('leads').on('postgres_changes',{event:'*',schema:'public',table:'leads'},async()=>{
-      await DB.fetchLeads(); Dashboard.load(); CRM.render();
+      await DB.fetchLeads(); Dashboard.load(); CRM.render(); Meetings.render();
       Toast.show('📡 CRM updated live','info',2000);
     }).subscribe();
     sb.channel('activities').on('postgres_changes',{event:'*',schema:'public',table:'activities'},async()=>{
@@ -1158,10 +1013,9 @@ const CRM = {
       const canDelete = isAdmin;
       const editBtn = canEdit ? `<button class="btn btn-sm btn-edit" onclick="CRM.openModal('${l.id}')">Edit</button>` : '';
       const delBtn  = canDelete ? `<button class="btn btn-sm btn-del" onclick="CRM.delete('${l.id}')">Del</button>` : '';
-      const notesPreview = l.notes ? `<br><span class="notes-preview" onclick="CRM.toggleNote(this)" data-full="${l.notes.replace(/"/g,'&quot;')}" style="font-size:10px;color:var(--accent2);font-style:italic;cursor:pointer" title="Click to expand">${l.notes.length>70?l.notes.substring(0,70)+'… ▼':l.notes}</span>` : '';
       return `<tr>
         <td style="color:var(--muted);font-size:11px">TL-${String(i+1).padStart(3,'0')}</td>
-        <td><strong style="cursor:pointer;color:var(--accent2);text-decoration:underline dotted" onclick="CRM.viewDetail('${l.id}')">${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}${notesPreview}</td>
+        <td><strong>${l.company_name}</strong><br><span style="font-size:11px;color:var(--muted)">${l.city||''}</span><br>${phone}</td>
         <td><span class="badge badge-lead" style="font-size:10px">${l.segment||'—'}</span></td>
         <td>${Fmt.stageBadge(l.stage)}</td>
         <td>${Fmt.priorityBadge(l.priority)}</td>
@@ -1240,89 +1094,6 @@ const CRM = {
       document.getElementById('f-meeting-time').value='';
       document.getElementById('f-meeting-place').value='';
     }
-  },
-
-  viewDetail(id){
-    const l = DB.leads.find(x=>x.id===id);
-    if(!l) return;
-    document.getElementById('ld-title').textContent = l.company_name;
-    const field = (label, value) => value ? `<div style="background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${label}</div>
-      <div style="font-weight:500;color:var(--text)">${value}</div>
-    </div>` : '';
-    const fullField = (label, value) => value ? `<div style="grid-column:span 2;background:var(--bg);border-radius:8px;padding:10px 12px;border:1px solid var(--border)">
-      <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">${label}</div>
-      <div style="font-weight:500;color:var(--text);line-height:1.6;white-space:pre-wrap">${value}</div>
-    </div>` : '';
-    document.getElementById('ld-body').innerHTML = [
-      field('Category', l.category),
-      field('Industry / Segment', l.segment||l.industry),
-      field('City', l.city),
-      field('Stage', l.stage),
-      field('Priority', l.priority),
-      field('Status', l.status),
-      field('Contact Person', l.contact_person),
-      field('Email', l.contact_email),
-      field('Phone', l.contact_phone),
-      field('Assigned Manager', l.assigned_to),
-      field('Added By', l.created_by ? l.created_by.split('@')[0] : ''),
-      field('Commission %', l.commission_pct ? l.commission_pct+'%' : ''),
-      field('Deal Value', l.deal_value ? '₹'+Number(l.deal_value).toLocaleString() : ''),
-      field('Meeting Date', l.meeting_date ? Fmt.date(l.meeting_date) : ''),
-      field('Next Follow-up', l.next_followup ? Fmt.date(l.next_followup) : ''),
-      field('Created On', l.created_at ? l.created_at.split('T')[0] : ''),
-      fullField('Notes', l.notes),
-    ].filter(Boolean).join('');
-    document.getElementById('lead-detail-modal').classList.add('open');
-  },
-
-  closeDetail(){
-    document.getElementById('lead-detail-modal').classList.remove('open');
-  },
-
-  toggleNote(el){
-    const full = el.getAttribute('data-full');
-    if(el.dataset.expanded==='1'){
-      el.textContent = full.length>70 ? full.substring(0,70)+'… ▼' : full;
-      el.dataset.expanded='0';
-    } else {
-      el.textContent = full + ' ▲';
-      el.dataset.expanded='1';
-    }
-  },
-
-  exportCSV(){
-    const leads = DB.leads;
-    if(!leads.length){ Toast.show('No leads to export','error'); return; }
-    const headers = ['#','Company','Category','Industry','City','Contact Person','Email','Phone','Stage','Priority','Manager','Added By','Deal Value','Meeting Date','Next Follow-up','Notes','Status','Created At'];
-    const rows = leads.map((l,i)=>[
-      `TL-${String(i+1).padStart(3,'0')}`,
-      l.company_name||'',
-      l.category||'',
-      l.industry||'',
-      l.city||'',
-      l.contact_person||'',
-      l.contact_email||'',
-      l.contact_phone||'',
-      l.stage||'',
-      l.priority||'',
-      l.assigned_to||'',
-      l.created_by||'',
-      l.deal_value||'',
-      l.meeting_date||'',
-      l.next_followup||'',
-      (l.notes||'').replace(/"/g,'""'),
-      l.status||'',
-      l.created_at?l.created_at.split('T')[0]:''
-    ].map(v=>`"${v}"`).join(','));
-    const csv = [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const today = new Date().toISOString().split('T')[0];
-    a.href=url; a.download=`travlounge-leads-${today}.csv`; a.click();
-    URL.revokeObjectURL(url);
-    Toast.show(`Exported ${leads.length} leads as CSV`,'success');
   },
 
   updateCharCount(){
@@ -1478,73 +1249,28 @@ const Activity = {
     this.populateMgrFilter();
   },
 
-  setType(btn){
-    document.querySelectorAll('.act-type-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    document.getElementById('af-type').value=btn.dataset.type;
-  },
-  setSentiment(btn){
-    document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
-    const map={Positive:'selected-pos',Neutral:'selected-neu',Negative:'selected-neg'};
-    btn.classList.add(map[btn.dataset.val]);
-    document.getElementById('af-sentiment').value=btn.dataset.val;
-  },
-  toggleNotes(){
-    const box=document.getElementById('af-notes-box');
-    const arrow=document.getElementById('af-notes-arrow');
-    const open=box.style.display==='none';
-    box.style.display=open?'block':'none';
-    arrow.textContent=open?'▾':'▸';
-  },
   openModal(id){
     document.getElementById('act-edit-id').value=id||'';
-    document.getElementById('act-modal-title').textContent=id?'Edit Activity':'Log Activity';
     const today=new Date().toISOString().split('T')[0];
-
-    // Populate company datalist from leads
-    const dl=document.getElementById('af-company-list');
-    dl.innerHTML=DB.leads.map(l=>`<option value="${l.company_name}">`).join('');
-
-    // Auto-fill manager
-    const displayName=currentUserEmail.split('@')[0];
-    const formatted=displayName.charAt(0).toUpperCase()+displayName.slice(1);
-    document.getElementById('af-manager-display').textContent='🔒 '+formatted;
-    document.getElementById('af-manager').value=formatted;
-
-    // Reset notes box
-    document.getElementById('af-notes-box').style.display='none';
-    document.getElementById('af-notes-arrow').textContent='▸';
-
+    populateManagerDropdown('af-manager');
     if(id){
       const a=DB.activities.find(x=>x.id===id);
       if(!a) return;
       document.getElementById('af-company').value   =a.company_name||'';
+      document.getElementById('af-type').value      =a.activity_type||'Call';
+      document.getElementById('af-manager').value   =a.manager||'';
       document.getElementById('af-date').value      =a.activity_date||today;
       document.getElementById('af-outcome').value   =a.outcome||'';
       document.getElementById('af-next-step').value =a.next_step||'';
       document.getElementById('af-followup').value  =a.followup_date||'';
+      document.getElementById('af-duration').value  =a.duration_mins||'';
+      document.getElementById('af-sentiment').value =a.sentiment||'';
       document.getElementById('af-notes').value     =a.notes||'';
-      if(a.notes){ document.getElementById('af-notes-box').style.display='block'; document.getElementById('af-notes-arrow').textContent='▾'; }
-      // Restore type button
-      document.querySelectorAll('.act-type-btn').forEach(b=>{b.classList.toggle('selected',b.dataset.type===(a.activity_type||'Call'));});
-      document.getElementById('af-type').value=a.activity_type||'Call';
-      // Restore sentiment button
-      document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
-      if(a.sentiment){
-        const map={Positive:'selected-pos',Neutral:'selected-neu',Negative:'selected-neg'};
-        const btn=document.querySelector(`.sent-btn[data-val="${a.sentiment}"]`);
-        if(btn) btn.classList.add(map[a.sentiment]);
-      }
-      document.getElementById('af-sentiment').value=a.sentiment||'';
-      // Restore manager if different
-      if(a.manager){ document.getElementById('af-manager').value=a.manager; document.getElementById('af-manager-display').textContent='🔒 '+a.manager; }
     } else {
-      ['af-company','af-outcome','af-next-step','af-followup','af-notes'].forEach(i=>document.getElementById(i).value='');
+      ['af-company','af-outcome','af-next-step','af-followup','af-duration','af-notes'].forEach(id=>document.getElementById(id).value='');
       document.getElementById('af-date').value=today;
       document.getElementById('af-type').value='Call';
       document.getElementById('af-sentiment').value='';
-      document.querySelectorAll('.act-type-btn').forEach(b=>b.classList.toggle('selected',b.dataset.type==='Call'));
-      document.querySelectorAll('.sent-btn').forEach(b=>b.classList.remove('selected-pos','selected-neu','selected-neg'));
     }
     document.getElementById('act-modal').classList.add('open');
   },
@@ -1572,9 +1298,10 @@ const Activity = {
       notes:document.getElementById('af-notes').value,
     };
     try{
-      await DB.upsertActivity(payload);
+      const saved = await DB.upsertActivity(payload);
       Toast.show(editId?'✅ Updated!':'✅ Activity logged!','success');
       this.closeModal(); await DB.fetchActivities(); this.render();
+      if(!editId) SlackIntegration.postPipelineCard(saved || payload);
     } catch(e){ Toast.show('Error: '+e.message,'error'); }
   },
 
@@ -1804,6 +1531,150 @@ const Slack = {
   }
 };
 
+// ── SLACK INTEGRATION ─────────────────────────────────────────────────────────
+// Webhook URLs stored in localStorage — configure via Settings → Slack
+const SLACK_PIPELINE_URL = localStorage.getItem('tl_slack_pipeline_url') || '';
+const SLACK_DAILY_URL    = localStorage.getItem('tl_slack_daily_url')    || '';
+
+const SlackIntegration = {
+
+  post(url, payload){
+    fetch(url, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    }).catch(()=>{});
+  },
+
+  sentimentEmoji(s){
+    if(!s) return '⚪';
+    const sl = s.toLowerCase();
+    if(sl.includes('positive')) return '🟢';
+    if(sl.includes('negative')) return '🔴';
+    return '🟡';
+  },
+
+  activityEmoji(type){
+    const t=(type||'').toLowerCase();
+    if(t.includes('call'))  return '📞';
+    if(t.includes('meet'))  return '🤝';
+    if(t.includes('visit')) return '🚗';
+    if(t.includes('email')) return '📧';
+    return '📌';
+  },
+
+  postPipelineCard(act){
+    const sentEmoji = this.sentimentEmoji(act.sentiment);
+    const actEmoji  = this.activityEmoji(act.activity_type);
+    const duration  = act.duration_mins ? ` · ${act.duration_mins} mins` : '';
+    const dueText   = act.followup_date ? `⏰ Due: ${Fmt.date(act.followup_date)}` : '⏰ No deadline set';
+    const timeNow   = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    const payload = {
+      blocks:[
+        { type:'section', text:{ type:'mrkdwn', text:`*${act.company_name}* ${sentEmoji} ${act.sentiment||''}` } },
+        { type:'section', fields:[
+          { type:'mrkdwn', text:`*Manager*\n${act.manager}` },
+          { type:'mrkdwn', text:`*Activity*\n${actEmoji} ${act.activity_type}${duration}` },
+          { type:'mrkdwn', text:`*Outcome*\n${act.outcome}` },
+          { type:'mrkdwn', text:`*Next action*\n${act.next_step}` }
+        ]},
+        { type:'context', elements:[{ type:'mrkdwn', text:`${dueText}  ·  Logged at ${timeNow} IST` }] },
+        { type:'divider' }
+      ]
+    };
+    this.post(SLACK_PIPELINE_URL, payload);
+  },
+
+  async postEODForManager(managerName, acts){
+    const today    = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'})).toISOString().split('T')[0];
+    const tomorrowDate = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+    tomorrowDate.setDate(tomorrowDate.getDate()+1);
+    const tomorrow = tomorrowDate.toISOString().split('T')[0];
+    const dateLabel= new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+    const uniqueCompanies = [...new Set(acts.map(a=>a.company_name))].length;
+    const dueTomorrow     = acts.filter(a=>a.followup_date===tomorrow).length;
+
+    // Overdue: leads with next_followup < today and no activity logged on or after that date
+    const overdueItems = [];
+    DB.leads.forEach(lead=>{
+      if(!lead.next_followup || lead.next_followup >= today) return;
+      const hasFollowUp = DB.activities.some(a=>
+        a.company_name===lead.company_name && a.activity_date && a.activity_date>=lead.next_followup
+      );
+      if(!hasFollowUp){
+        const days = Math.floor((new Date()-new Date(lead.next_followup))/(1000*60*60*24));
+        overdueItems.push({ company:lead.company_name, days });
+      }
+    });
+
+    const actLines = acts.length > 0
+      ? acts.map(a=>`${this.sentimentEmoji(a.sentiment)} *${a.company_name}* — ${a.activity_type} — ${a.next_step}${a.followup_date?' _(Due '+Fmt.date(a.followup_date)+'_)':''}`).join('\n')
+      : '_No activities logged today_';
+
+    const blocks = [
+      { type:'header', text:{ type:'plain_text', text:`📋 EOD Report — ${managerName}` } },
+      { type:'context', elements:[{ type:'mrkdwn', text:dateLabel }] },
+      { type:'section', fields:[
+        { type:'mrkdwn', text:`*Activities*\n${acts.length}` },
+        { type:'mrkdwn', text:`*Companies reached*\n${uniqueCompanies}` },
+        { type:'mrkdwn', text:`*Due tomorrow*\n${dueTomorrow}` }
+      ]},
+      { type:'divider' },
+      { type:'section', text:{ type:'mrkdwn', text:`*Activities logged today*\n${actLines}` } }
+    ];
+
+    if(overdueItems.length > 0){
+      const overdueLines = overdueItems.map(o=>`⚠️ *${o.company}* — ${o.days} day${o.days>1?'s':''} overdue`).join('\n');
+      blocks.push({ type:'divider' });
+      blocks.push({ type:'section', text:{ type:'mrkdwn', text:`*Overdue follow-ups — action required*\n${overdueLines}` } });
+    }
+
+    blocks.push({ type:'context', elements:[{ type:'mrkdwn', text:'Travlounge BD · Auto-generated at 7:30 PM IST' }] });
+    this.post(SLACK_DAILY_URL, { blocks });
+  },
+
+  async runEOD(){
+    await Promise.all([DB.fetchActivities(), DB.fetchLeads()]);
+    const istNow  = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+    const today   = istNow.toISOString().split('T')[0];
+    const todayActs = DB.activities.filter(a=>a.activity_date===today);
+
+    // Group by manager
+    const byManager = {};
+    todayActs.forEach(a=>{
+      const m = a.manager||'Unassigned';
+      if(!byManager[m]) byManager[m]=[];
+      byManager[m].push(a);
+    });
+    // Also include managers who logged nothing today
+    DB.managers.forEach(m=>{ if(!byManager[m.name]) byManager[m.name]=[]; });
+
+    for(const [manager, acts] of Object.entries(byManager)){
+      await this.postEODForManager(manager, acts);
+      await new Promise(r=>setTimeout(r,1200));
+    }
+    Toast.show('📤 EOD reports sent to Slack','success',4000);
+  },
+
+  scheduleEOD(){
+    const check=()=>{
+      const ist = new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Kolkata'}));
+      const h=ist.getHours(), m=ist.getMinutes();
+      const today=ist.toDateString();
+      if(h===19 && m===30){
+        const lastSent=localStorage.getItem('tl_eod_sent');
+        if(lastSent!==today){
+          localStorage.setItem('tl_eod_sent',today);
+          this.runEOD();
+        }
+      }
+    };
+    setInterval(check,60000);
+    check();
+  }
+};
+
 // ── SETTINGS ──────────────────────────────────────────────────────────────────
 const Settings = {
   load(){
@@ -1844,6 +1715,103 @@ const DarkMode = {
 };
 
 // ── ROUTER ────────────────────────────────────────────────────────────────────
+// ── MEETINGS ──────────────────────────────────────────────────────────────────
+const Meetings = {
+  getMeetings(){
+    return (DB.leads||[])
+      .filter(l => l.meeting_date)
+      .map(l => ({
+        id: l.id,
+        company: l.company,
+        segment: l.segment,
+        manager: l.assigned_manager,
+        date: l.meeting_date,
+        time: l.meeting_time,
+        place: l.meeting_place,
+        stage: l.stage,
+        priority: l.priority,
+      }))
+      .sort((a,b)=>{
+        const da=new Date((a.date||'9999')+'T'+(a.time||'00:00'));
+        const db=new Date((b.date||'9999')+'T'+(b.time||'00:00'));
+        return da-db;
+      });
+  },
+  render(){
+    const meetings = this.getMeetings();
+    const today = new Date().toISOString().split('T')[0];
+    const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate()+7);
+    const weekStr = weekEnd.toISOString().split('T')[0];
+
+    // KPIs
+    document.getElementById('mtg-kpi-total').textContent   = meetings.length;
+    document.getElementById('mtg-kpi-today').textContent   = meetings.filter(m=>m.date===today).length;
+    document.getElementById('mtg-kpi-week').textContent    = meetings.filter(m=>m.date>=today&&m.date<=weekStr).length;
+    document.getElementById('mtg-kpi-overdue').textContent = meetings.filter(m=>m.date<today).length;
+
+    // Today banner
+    const todayCount = meetings.filter(m=>m.date===today).length;
+    const banner = document.getElementById('mtg-today-banner');
+    if(todayCount>0){
+      banner.style.display='flex';
+      document.getElementById('mtg-banner-text').textContent =
+        `You have ${todayCount} meeting${todayCount>1?'s':''} scheduled for today`;
+    } else {
+      banner.style.display='none';
+    }
+
+    // Manager filter
+    const mgrs = [...new Set(meetings.map(m=>m.manager).filter(Boolean))];
+    const mgrSel = document.getElementById('mtg-mgr-filter');
+    const curMgr = mgrSel.value;
+    mgrSel.innerHTML = '<option value="">All Managers</option>';
+    mgrs.forEach(m=>{ const o=document.createElement('option'); o.value=m; o.textContent=m; if(m===curMgr)o.selected=true; mgrSel.appendChild(o); });
+
+    this.filter();
+  },
+  filter(){
+    const mgr    = document.getElementById('mtg-mgr-filter').value;
+    const period = document.getElementById('mtg-period-filter').value;
+    const today  = new Date().toISOString().split('T')[0];
+    const weekEnd = new Date(); weekEnd.setDate(weekEnd.getDate()+7);
+    const weekStr = weekEnd.toISOString().split('T')[0];
+
+    let list = this.getMeetings();
+    if(mgr)           list = list.filter(m=>m.manager===mgr);
+    if(period==='today')    list = list.filter(m=>m.date===today);
+    else if(period==='upcoming') list = list.filter(m=>m.date>=today);
+    else if(period==='past')     list = list.filter(m=>m.date<today);
+
+    const tbody = document.getElementById('mtg-tbody');
+    if(!list.length){
+      tbody.innerHTML='<tr class="empty-row"><td colspan="9">No meetings found for this filter.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = list.map(m=>{
+      const isToday   = m.date===today;
+      const isPast    = m.date<today;
+      const timeStr   = m.time ? m.time.substring(0,5) : '—';
+      const rowCls    = isToday ? 'mtg-today-row' : isPast ? 'mtg-overdue-row' : '';
+      const statusBadge = isToday
+        ? '<span class="badge badge-today">📅 Today</span>'
+        : isPast
+        ? '<span class="badge badge-past-mtg">Done</span>'
+        : '<span class="badge badge-upcoming">Upcoming</span>';
+      return `<tr class="${rowCls}">
+        <td><strong>${Fmt.date(m.date)}</strong></td>
+        <td style="font-weight:600;color:var(--accent)">${timeStr}</td>
+        <td>${m.company||'—'}</td>
+        <td>${m.segment||'—'}</td>
+        <td>${m.manager||'—'}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${m.place||'—'}</td>
+        <td>${Fmt.stageBadge(m.stage)}</td>
+        <td>${statusBadge}</td>
+        <td><button class="btn btn-edit btn-sm" onclick="CRM.openModal('${m.id}')">Edit</button></td>
+      </tr>`;
+    }).join('');
+  }
+};
+
 const Router = {
   go(view){
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -1853,6 +1821,7 @@ const Router = {
     closeSidebar();
     if(view==='settings') Settings.load();
     if(view==='team') Team.load();
+    if(view==='meetings') Meetings.render();
   }
 };
 
@@ -1863,6 +1832,7 @@ const Router = {
   const { data:{ session } } = await sb.auth.getSession();
   if(session) await Auth.onLogin();
   else document.getElementById('login-screen').style.display='flex';
+  SlackIntegration.scheduleEOD();
 })();
 
 document.querySelectorAll('.modal-overlay').forEach(o=>{
