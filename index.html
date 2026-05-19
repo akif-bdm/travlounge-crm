@@ -447,7 +447,7 @@ body.dark .mgr-summary-card{background:#13132a;}
             <select class="filter-sel" id="crm-stage-filter" onchange="CRM.filter()">
               <option value="">All Stages</option>
               <option>First Outreach</option><option>Meeting Done</option>
-              <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option>
+              <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option><option>Rejected but Interested</option>
             </select>
             <select class="filter-sel" id="crm-seg-filter" onchange="CRM.filter()">
               <option value="">All Segments</option>
@@ -460,7 +460,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <div class="content">
           <div class="table-card">
             <div class="table-wrap"><table>
-              <thead><tr><th>#</th><th>Company</th><th>Segment</th><th>Stage</th><th>Priority</th><th>Manager</th><th>Follow-up</th><th>Commission</th><th>Age</th><th>Actions</th></tr></thead>
+              <thead><tr><th>#</th><th>Company</th><th>Segment</th><th>Stage</th><th>Priority</th><th>Manager</th><th>Follow-up</th><th>Commission / Ticket</th><th>Age</th><th>Actions</th></tr></thead>
               <tbody id="crm-tbody"><tr class="empty-row"><td colspan="10">Loading...</td></tr></tbody>
             </table></div>
           </div>
@@ -639,7 +639,7 @@ body.dark .mgr-summary-card{background:#13132a;}
       </div>
       <div class="form-group">
         <label>Segment <span class="required-star">*</span></label>
-        <select id="f-segment">
+        <select id="f-segment" onchange="CRM.onSegmentChange()">
           <option value="">Select segment...</option>
           <option>Cafe</option><option>Restaurant</option><option>Gym</option>
           <option>Pharmacy</option><option>Coworking</option><option>Laundry</option>
@@ -650,7 +650,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <label>City</label>
         <select id="f-city">
           <option value="">Select city...</option>
-          <option>Calicut</option>
+          <option>Kozhikode</option>
           <option>Ernakulam</option>
           <option>Malappuram</option>
           <option>Wayanad</option>
@@ -691,7 +691,7 @@ body.dark .mgr-summary-card{background:#13132a;}
         <label>Stage <span class="required-star">*</span></label>
         <select id="f-stage">
           <option>First Outreach</option><option>Meeting Done</option>
-          <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option>
+          <option>Negotiation</option><option>Closed &amp; Won</option><option>Rejected</option><option>Rejected but Interested</option>
         </select>
       </div>
       <div class="form-group">
@@ -702,9 +702,13 @@ body.dark .mgr-summary-card{background:#13132a;}
         <label>Assigned Manager <span class="required-star">*</span></label>
         <select id="f-assigned"><option value="">Select manager...</option></select>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="commission-group">
         <label>Commission %</label>
         <input type="number" id="f-commission" placeholder="e.g. 15" min="0" max="100" step="0.1"/>
+      </div>
+      <div class="form-group" id="ticket-size-group" style="display:none;">
+        <label>Approx Ticket Size</label>
+        <input type="text" id="f-ticket-size" placeholder="e.g. ₹50,000 / month"/>
       </div>
       <div class="form-group full">
         <label>Next Follow-up Date <span class="required-star">*</span></label>
@@ -908,11 +912,11 @@ const DB = {
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 const STAGE_COLORS = {
   'First Outreach':'#AED6F1','Meeting Done':'#5DADE2',
-  'Negotiation':'#7D3C98','Closed & Won':'#00B894','Rejected':'#E17055'
+  'Negotiation':'#7D3C98','Closed & Won':'#00B894','Rejected':'#E17055','Rejected but Interested':'#F39C12'
 };
 const STAGE_BADGE = {
   'First Outreach':'outreach','Meeting Done':'meeting',
-  'Negotiation':'negotiation','Closed & Won':'won','Rejected':'rejected'
+  'Negotiation':'negotiation','Closed & Won':'won','Rejected':'rejected','Rejected but Interested':'negotiation'
 };
 
 const Fmt = {
@@ -1006,7 +1010,7 @@ const Dashboard = {
         <td>${Fmt.stageBadge(l.stage)}</td>
         <td>${l.assigned_to||'—'}</td>
         <td class="${fuClass}">${Fmt.date(fu)}</td>
-        <td>${Fmt.commission(l.commission_pct)}</td>
+        <td>${l.segment==='Ads' ? (l.deal_value ? '🎯 '+l.deal_value : '—') : Fmt.commission(l.commission_pct)}</td>
         <td>${Fmt.ageLabel(l.created_at)}</td>
       </tr>`;
     }).join('');
@@ -1055,7 +1059,7 @@ const CRM = {
           ${l.created_by ? `<br><span style="font-size:10px;color:var(--muted)">added by ${l.created_by.split('@')[0]}</span>` : ''}
         </td>
         <td class="${fuClass}">${Fmt.date(fu)}</td>
-        <td>${Fmt.commission(l.commission_pct)}</td>
+        <td>${l.segment==='Ads' ? (l.deal_value ? '🎯 '+l.deal_value : '—') : Fmt.commission(l.commission_pct)}</td>
         <td>${Fmt.ageLabel(l.created_at)}</td>
         <td style="display:flex;gap:4px;flex-wrap:wrap">
           ${wa}${editBtn}${delBtn}
@@ -1089,7 +1093,9 @@ const CRM = {
       document.getElementById('f-priority').value      =l.priority||'Medium';
       document.getElementById('f-assigned').value      =l.assigned_to||'';
       document.getElementById('f-commission').value    =l.commission_pct||'';
+      document.getElementById('f-ticket-size').value   =l.deal_value||'';
       document.getElementById('f-followup').value      =l.next_followup||'';
+      CRM.onSegmentChange();
       document.getElementById('f-notes').value         =l.notes||'';
       if(l.meeting_date){
         document.getElementById('f-meeting-checkbox').checked=true;
@@ -1103,8 +1109,9 @@ const CRM = {
       document.getElementById('notes-char-count').className='char-count'+(nc>=50?' ok':'');
     } else {
       ['f-company','f-contact-person','f-contact-phone','f-contact-email',
-       'f-commission','f-followup','f-notes',
+       'f-commission','f-ticket-size','f-followup','f-notes',
        'f-meeting-time','f-meeting-place'].forEach(id=>document.getElementById(id).value='');
+      CRM.onSegmentChange();
       document.getElementById('f-city').value='';
       document.getElementById('f-source').value='';
       document.getElementById('f-stage').value='First Outreach';
@@ -1116,6 +1123,15 @@ const CRM = {
   },
 
   closeModal(){ document.getElementById('crm-modal').classList.remove('open'); },
+
+  onSegmentChange(){
+    const seg = document.getElementById('f-segment').value;
+    const isAds = seg === 'Ads';
+    document.getElementById('commission-group').style.display = isAds ? 'none' : '';
+    document.getElementById('ticket-size-group').style.display = isAds ? '' : 'none';
+    if(isAds) document.getElementById('f-commission').value = '';
+    else document.getElementById('f-ticket-size').value = '';
+  },
 
   toggleMeetingDate(){
     const checked=document.getElementById('f-meeting-checkbox').checked;
@@ -1167,7 +1183,8 @@ const CRM = {
       stage:document.getElementById('f-stage').value,
       priority:document.getElementById('f-priority').value,
       assigned_to:assignedTo,
-      commission_pct:document.getElementById('f-commission').value||null,
+      commission_pct:segment==='Ads' ? null : (document.getElementById('f-commission').value||null),
+      deal_value:segment==='Ads' ? (document.getElementById('f-ticket-size').value||null) : null,
       next_followup:followup,
       meeting_date:meetingDate||null,
       meeting_time:meetingTime||null,
