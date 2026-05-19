@@ -752,6 +752,25 @@ body.dark .mgr-summary-card{background:#13132a;}
   </div>
 </div>
 
+<!-- NOTES VIEWER MODAL -->
+<div class="modal-overlay" id="notes-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="width:520px;max-width:100%;">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;">
+      <div>
+        <h3 id="notes-modal-company" style="margin-bottom:2px;"></h3>
+        <div id="notes-modal-meta" style="font-size:12px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;"></div>
+      </div>
+      <button onclick="document.getElementById('notes-modal').classList.remove('open')" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:0 4px;">×</button>
+    </div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;"/>
+    <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px;">Notes</div>
+    <div id="notes-modal-body" style="font-size:14px;line-height:1.75;color:var(--text);white-space:pre-wrap;background:var(--table-head);border-radius:8px;padding:14px 16px;min-height:80px;"></div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="btn-primary" onclick="document.getElementById('notes-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- ACTIVITY MODAL -->
 <div class="modal-overlay" id="act-modal">
   <div class="modal">
@@ -1062,7 +1081,7 @@ const CRM = {
         <td>${l.segment==='Ads' ? (l.deal_value ? '🎯 '+l.deal_value : '—') : Fmt.commission(l.commission_pct)}</td>
         <td>${Fmt.ageLabel(l.created_at)}</td>
         <td style="display:flex;gap:4px;flex-wrap:wrap">
-          ${wa}${editBtn}${delBtn}
+          ${wa}${l.notes ? `<button class="btn btn-sm" title="View Notes" onclick="CRM.viewNotes('${l.id}')" style="background:var(--table-head);border:1px solid var(--border);color:var(--text);padding:3px 7px;border-radius:6px;font-size:11px;cursor:pointer;">📝</button>` : ''}${editBtn}${delBtn}
         </td>
       </tr>`;
     }).join('');
@@ -1123,6 +1142,19 @@ const CRM = {
   },
 
   closeModal(){ document.getElementById('crm-modal').classList.remove('open'); },
+
+  viewNotes(id){
+    const l = DB.leads.find(x => x.id === id);
+    if(!l) return;
+    document.getElementById('notes-modal-company').textContent = l.company_name;
+    document.getElementById('notes-modal-meta').innerHTML = [
+      l.segment ? `<span class="badge badge-lead" style="font-size:10px">${l.segment}</span>` : '',
+      Fmt.stageBadge(l.stage),
+      l.assigned_to ? `<span style="color:var(--muted)">👤 ${l.assigned_to}</span>` : '',
+    ].filter(Boolean).join('');
+    document.getElementById('notes-modal-body').textContent = l.notes || 'No notes added.';
+    document.getElementById('notes-modal').classList.add('open');
+  },
 
   onSegmentChange(){
     const seg = document.getElementById('f-segment').value;
