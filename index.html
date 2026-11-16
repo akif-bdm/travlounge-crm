@@ -32,6 +32,10 @@ button,input,select,textarea{font:inherit;color:inherit}
 .login-card .wordmark{font-size:30px}
 .login-card p{color:var(--muted);font-size:14px;margin-top:-8px}
 .login-error{display:none;color:var(--bad);font-size:13px}
+.login-note{display:none;color:var(--ok);font-size:13px;line-height:1.5}
+.link-btn{border:0;background:transparent;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer;padding:6px 0;text-align:center;min-height:44px}
+.link-btn:hover{color:var(--accent)}
+#pwd-screen{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px}
 
 /* ── SHELL ── */
 #app{display:none}
@@ -319,6 +323,20 @@ body.viewer-mode .deal select{display:none}
     <div class="form-group"><label for="login-pass">Password</label><input type="password" id="login-pass" placeholder="Password" autocomplete="current-password"/></div>
     <button class="btn-primary" onclick="Auth.login()">Sign in</button>
     <div class="login-error" id="login-error"></div>
+    <button type="button" class="link-btn" onclick="Pwd.forgot()">Forgot password? Set a new one</button>
+    <div class="login-note" id="login-note"></div>
+  </div>
+</div>
+
+<!-- SET NEW PASSWORD (after reset link, or first login) -->
+<div id="pwd-screen">
+  <div class="login-card">
+    <div class="wordmark">travlounge<b>.</b></div>
+    <p id="pwd-intro">Choose your own password. You will use it with your Travlounge email from now on.</p>
+    <div class="form-group"><label for="pwd-new">New password</label><input type="password" id="pwd-new" placeholder="At least 8 characters" autocomplete="new-password"/></div>
+    <div class="form-group"><label for="pwd-confirm">Type it again</label><input type="password" id="pwd-confirm" placeholder="Same password" autocomplete="new-password"/></div>
+    <button class="btn-primary" id="pwd-save" onclick="Pwd.save()">Save password</button>
+    <div class="login-error" id="pwd-error"></div>
   </div>
 </div>
 
@@ -347,6 +365,7 @@ body.viewer-mode .deal select{display:none}
           <button onclick="Router.go('team')">Team</button>
           <button onclick="Router.go('settings')">Settings</button>
           <button onclick="Slack.generatePoster()">Export EOD poster</button>
+          <button onclick="Pwd.change()">Change password</button>
           <button onclick="Auth.logout()">Sign out</button>
         </div>
       </div>
@@ -543,6 +562,12 @@ body.viewer-mode .deal select{display:none}
         <div class="config-field"><label for="cfg-sb-url">Project URL</label><input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co"/></div>
         <div class="config-field"><label for="cfg-sb-key">Anon key</label><input type="text" id="cfg-sb-key" placeholder="eyJ..."/></div>
         <button class="btn btn-add btn-sm" onclick="Settings.save()">Save &amp; reload</button>
+      </div>
+      <div class="settings-card" style="grid-column:1/-1">
+        <h4>Giving someone a login</h4>
+        <p>1. In Supabase, go to Authentication → Users → Add user → Create new user. Enter their Travlounge email and the starter password, and tick Auto Confirm User.<br>
+        2. Add them here under Team with the same email, so their name shows on the board and scorecard.<br>
+        3. They sign in with the starter password, and the app asks them to choose their own right away. If they forget it later, they use “Forgot password” on the sign-in screen.</p>
       </div>
       <div class="settings-card" style="grid-column:1/-1">
         <h4>KPI scoring</h4>
@@ -1734,7 +1759,7 @@ const Dt = {
   isoWeek(s){ const d=new Date(s+'T00:00:00Z'); d.setUTCDate(d.getUTCDate()+4-((d.getUTCDay()+6)%7)); const y=new Date(Date.UTC(d.getUTCFullYear(),0,1)); return Math.ceil(((d-y)/86400000+1)/7); },
   label(s,opt){ return new Date(s+'T00:00:00Z').toLocaleDateString('en-IN',Object.assign({timeZone:'UTC'},opt||{day:'numeric',month:'short'})); }
 };
-function initials(name){ const p=String(name||'?').trim().split(/\s+/); return ((p[0]||'')[0]||'?').toUpperCase()+((p[1]||p[0]||'')[1]||'').toUpperCase(); }
+function initials(name){ const p=String(name||'?').trim().split(/\s+/); return (((p[0]||'')[0]||'?') + (p[1] ? p[1][0] : ((p[0]||'')[1]||''))).toUpperCase(); }
 function personColor(name){ const i=People.list().findIndex(p=>p.name===name); return PEOPLE_COLORS[(i<0?0:i)%PEOPLE_COLORS.length]; }
 function avatar(name,cls){ return `<span class="avatar ${cls||''}" style="background:${personColor(name)}" title="${esc(name)}">${esc(initials(name))}</span>`; }
 function isWon(l){ return l.stage==='Closed & Won'; }
@@ -2119,6 +2144,67 @@ DarkMode.init = function(){}; DarkMode.apply = function(){}; DarkMode.toggle = f
     if(['team','settings'].includes(v)) v='today';
     Router.go(document.getElementById('view-'+v) ? v : 'today');
   };
+})();
+
+// ── PASSWORDS: forgot / first-login / change ─────────────────────────────────
+const Pwd = {
+  recovery: /type=recovery/.test(location.hash) || /type=recovery/.test(location.search),
+  mode: 'first',
+  el(id){ return document.getElementById(id); },
+  show(intro){
+    ['login-screen','app'].forEach(id=>{ const e=Pwd.el(id); if(e) e.style.display='none'; });
+    Pwd.el('pwd-screen').style.display='flex';
+    if(intro) Pwd.el('pwd-intro').textContent = intro;
+    Pwd.el('pwd-error').style.display='none';
+    Pwd.el('pwd-new').value=''; Pwd.el('pwd-confirm').value='';
+    setTimeout(()=>Pwd.el('pwd-new').focus(), 50);
+  },
+  err(id,msg){ const e=Pwd.el(id); e.textContent=msg; e.style.display='block'; },
+  async forgot(){
+    const email = (Pwd.el('login-email').value||'').trim().toLowerCase();
+    Pwd.el('login-error').style.display='none'; Pwd.el('login-note').style.display='none';
+    if(!email || !email.includes('@')){ Pwd.err('login-error','Type your Travlounge email above, then tap Forgot password.'); return; }
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if(error){ Pwd.err('login-error', error.message); return; }
+    const n=Pwd.el('login-note'); n.textContent=`A reset link is on its way to ${email}. Open it, then choose your new password. Check spam if it doesn't arrive in a few minutes.`; n.style.display='block';
+  },
+  change(){ Menu.close(); Pwd.mode='change'; Pwd.show('Choose a new password for your account.'); },
+  async save(){
+    const p=Pwd.el('pwd-new').value, c=Pwd.el('pwd-confirm').value;
+    Pwd.el('pwd-error').style.display='none';
+    if(p.length<8) return Pwd.err('pwd-error','Use at least 8 characters.');
+    if(p!==c) return Pwd.err('pwd-error','The two passwords don’t match.');
+    const btn=Pwd.el('pwd-save'); btn.disabled=true; btn.textContent='Saving…';
+    const { error } = await sb.auth.updateUser({ password:p, data:{ pwd_set:true } });
+    btn.disabled=false; btn.textContent='Save password';
+    if(error) return Pwd.err('pwd-error', error.message);
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+    Pwd.recovery=false;
+    Pwd.el('pwd-screen').style.display='none';
+    Toast.show('Password saved','success');
+    if(Pwd.mode==='change'){ Pwd.el('app').style.display='block'; Pwd.mode='first'; }
+    else await Auth.onLogin();
+  }
+};
+(function(){
+  const _initSb = initSupabase;
+  initSupabase = function(){
+    const c = _initSb();
+    try{ c.auth.onAuthStateChange((ev)=>{ if(ev==='PASSWORD_RECOVERY'){ Pwd.recovery=true; Pwd.mode='first'; Pwd.show('Choose your new password.'); } }); }catch(e){}
+    return c;
+  };
+  const _onLogin2 = Auth.onLogin;
+  Auth.onLogin = async function(){
+    const { data:{ user } } = await sb.auth.getUser();
+    if(user && (Pwd.recovery || !(user.user_metadata||{}).pwd_set)){
+      Pwd.mode='first';
+      Pwd.show(Pwd.recovery ? 'Choose your new password.' : 'Welcome. Replace the starter password with your own. You will use it with your Travlounge email from now on.');
+      return;
+    }
+    return _onLogin2();
+  };
+  const _logout = Auth.logout.bind(Auth);
+  Auth.logout = async function(){ Pwd.el('pwd-screen').style.display='none'; Menu.close(); return _logout(); };
 })();
 
 CRM.setDealType('GSP');
