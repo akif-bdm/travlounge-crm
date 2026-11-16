@@ -2147,8 +2147,20 @@ DarkMode.init = function(){}; DarkMode.apply = function(){}; DarkMode.toggle = f
 })();
 
 // ── PASSWORDS: forgot / first-login / change ─────────────────────────────────
+const _urlParams = (function(){ const o={}; [location.search.slice(1), location.hash.slice(1)].forEach(str=>{ new URLSearchParams(str).forEach((v,k)=>{ o[k]=v; }); }); return o; })();
 const Pwd = {
-  recovery: /type=recovery/.test(location.hash) || /type=recovery/.test(location.search),
+  recovery: _urlParams.type==='recovery',
+  tokenHash: _urlParams.token_hash || '',
+  linkError: _urlParams.error_description || _urlParams.error || '',
+  linkErrorCode: _urlParams.error_code || '',
+  showLinkError(){
+    if(!Pwd.linkError) return;
+    const expired = /expired|invalid/i.test(Pwd.linkError+' '+Pwd.linkErrorCode);
+    Pwd.err('login-error', expired
+      ? 'That reset link has expired or was already used. Each link works once, for one hour, and only the newest email works. Type your email and tap Forgot password again.'
+      : 'The reset link did not work: ' + Pwd.linkError.replace(/\+/g,' ') + '. Type your email and tap Forgot password again.');
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
+  },
   mode: 'first',
   el(id){ return document.getElementById(id); },
   show(intro){
@@ -2190,6 +2202,11 @@ const Pwd = {
   const _initSb = initSupabase;
   initSupabase = function(){
     const c = _initSb();
+    if(Pwd.tokenHash && Pwd.recovery){
+      Pwd.otp = c.auth.verifyOtp({ token_hash: Pwd.tokenHash, type: 'recovery' }).then(r=>{ if(r.error){ Pwd.linkError=r.error.message; Pwd.recovery=false; } }).catch(e=>{ Pwd.linkError=e.message; Pwd.recovery=false; });
+      const _gs = c.auth.getSession.bind(c.auth);
+      c.auth.getSession = async function(){ await Pwd.otp; return _gs(); };
+    }
     try{ c.auth.onAuthStateChange((ev)=>{ if(ev==='PASSWORD_RECOVERY'){ Pwd.recovery=true; Pwd.mode='first'; Pwd.show('Choose your new password.'); } }); }catch(e){}
     return c;
   };
@@ -2222,6 +2239,9 @@ document.querySelectorAll('.modal-overlay').forEach(o=>{
   o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
 });
 document.getElementById('login-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') Auth.login(); });
+
+setTimeout(()=>Pwd.showLinkError(), 0);
+(Pwd.otp||Promise.resolve()).then(()=>Pwd.showLinkError());
 </script>
 </body>
 </html>
